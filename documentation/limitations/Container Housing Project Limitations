@@ -1,0 +1,150 @@
+Last Updated: January 4, 2025
+
+# Container Housing Project Limitations
+
+## 1. Geographic Limitations
+
+### Location Constraints
+
+- Limited to Manila outskirts only
+- Justification:
+  - Higher housing demand data availability
+  - Proximity to shipping container sources
+  - Lower land costs
+  - Existing infrastructure connections
+  - Better employment opportunities
+  - More comprehensive urban development data
+
+### Geographic Exclusions
+
+- Other major cities not considered
+- Rural areas not evaluated
+- Different climate zones not analyzed
+
+## 2. Housing Unit Specifications
+
+### Occupancy Limitations
+
+- Maximum family size: 4 people
+- Room configuration: 2 bedrooms only
+- No multi-family configurations considered
+
+### Design Constraints
+
+- Standard finish level only
+- Basic utilities package only
+- No custom modifications
+- No multi-story configurations
+
+## 3. Container Specifications
+
+### Physical Limitations
+
+- Size: 40ft High Ceiling (HC) container only
+  - Fixed dimensions: 29.7m² (320 sq ft)
+  - Rectangular shape constraints
+  - No structural modifications considered
+- Type: Cargo Worthy (CW) classification only
+- Used containers only (post-shipping life)
+- No container stacking configurations
+
+### Technical Constraints
+
+- Standard ventilation systems only
+- Basic insulation specifications
+- Limited modification options
+
+## 4. Data Limitations
+
+### Price Data
+
+- Limited to ship.com pricing data
+- Time range: 2017-2024 only
+- Single supplier perspective
+- Limited market comparison data
+- US port pricing used instead of Philippine pricing
+- Geographic price translation required
+- Currency conversion considerations
+- Different market conditions between US and Philippines
+- Limited to specific US port data (West Coast focus)
+- Potential market variations between source locations
+
+### Cost Analysis Gaps
+
+- No local container home conversion cost data
+- Limited utilities installation cost data
+- Incomplete labor cost information
+- Missing modification cost details
+
+### Research Constraints
+
+- Limited local case studies
+- Minimal long-term performance data
+- Limited failure rate statistics
+- No occupant satisfaction data
+
+## 5. Standard Finish Specifications
+
+### Basic Inclusions
+
+- Strategic window placement
+- Basic ventilation design
+- Standard roof extensions
+- Basic moisture barriers
+- Fundamental anti-corrosion treatment
+- Basic flood elevation
+- Standard electrical and plumbing
+
+### Excluded Premium Features
+
+- Advanced heat-reflective coatings
+- Additional ventilation systems
+- Premium anti-corrosion treatments
+- Extended shade structures
+- Advanced drainage systems
+- Higher elevation structures
+
+## 6. Price Translation Considerations
+
+### US to Philippines Conversion Factors
+
+- Exchange rate fluctuations
+- Different labor market conditions
+- Varied regulatory requirements
+- Transportation cost differences
+- Market size disparities
+- Different economic conditions
+- Local vs international pricing structures
+
+### Market Adjustment Needs
+
+- Cost of living differences
+- Labor rate adjustments
+- Local market conditions
+- Supply chain variations
+- Regulatory compliance costs
+- Port handling fee differences
+- Local transportation costs
+
+### Price Estimation Methodology
+
+- High ceiling container prices based on West Coast US data
+- Base Philippine standard (40ft) container price: $2,175
+- Applied 2.49% premium for high ceiling estimation
+- Estimated Philippine high ceiling price: $2,229.05
+- West Coast ports used due to:
+  - Direct Asian trade routes
+  - More relevant pricing patterns
+  - Conservative premium estimation
+- Price conversion limitations:
+  - Market condition differences
+  - Supply chain variations
+  - Regional economic factors
+- Validation needed for local market accuracy
+
+### Notes
+
+- Study limitations affect result generalizability
+- Regular updates needed as market conditions change
+- Additional local data would strengthen findings
+- West Coast data preferred for Asian market relevance

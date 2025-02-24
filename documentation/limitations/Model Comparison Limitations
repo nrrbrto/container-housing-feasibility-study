@@ -1,0 +1,118 @@
+Last Updated: January 17, 2025
+
+# Model Comparison Limitations
+
+## Cost Calculation Breakdown
+
+### Traditional Housing Cost Calculation
+1. Contractor Rates (2024):
+   - Ian Fulgar Construction:
+     * Minimum: ₱25,000/sqm
+     * Maximum: ₱29,000/sqm
+     * Average: (₱25,000 + ₱29,000)/2 = ₱27,000/sqm
+   - ACDC Contractors:
+     * Rate: ₱32,000/sqm
+   - Combined average: (₱27,000 + ₱32,000)/2 = ₱29,500/sqm
+   - Total for 24 sqm unit: ₱29,500 × 24 = ₱708,000
+
+2. Cost Components (based on industry standards):
+   - Labor: 30% (CLMA industry average) = ₱212,400
+   - Finishes: 35.8% (NAHB):
+     * Internal finishes: 24%
+     * External finishes: 11.8%
+     * Total finishes: ₱253,464
+   - Materials (remaining 34.2%): ₱242,136
+
+### ODD Cubes Cost Breakdown
+From ArchJosieDeAsisDP.pdf:
+1. Base Components:
+   - Livable unit cost: ₱360,000
+   - Fenestration (6 cuts × ₱10,000): ₱60,000
+   - Total cost: ₱420,000
+
+2. Cost Components:
+   - Materials (Base unit minus estimated finishes): ₱231,120
+   - Labor (fenestration): ₱60,000
+   - Finishes (35.8% of base unit): ₱128,880
+
+## Container Specification Differences
+
+### Arch Josie Study Model
+- Uses 2 x Class C containers (20ft each)
+- Total container cost: ₱78,000 (₱39,000 each)
+- Modification costs: ₱10,000 per cut (ODD Cubes Inc. pricing)
+- Multiple connection points needed between containers
+- Total cuts required: 6 (4 windows + 2 doors)
+- Total modification cost: ₱60,000
+
+### Current Study Model
+- Uses 1 x Class A 40ft HC container
+- Single unit eliminates need for container joining
+- Potentially fewer cuts required due to single unit
+- May have reduced modification costs due to:
+  * Fewer structural reinforcements needed
+  * No inter-container connections
+  * Potentially fewer total cuts
+  * Higher quality container requiring less remedial work
+
+## Finish Specifications
+
+### Conceptual Base Model
+- Minimum finish requirements
+- Basic utilities package
+- Standard insulation
+- Basic ventilation
+- Base budget allocation: ₱102,000
+
+### Conceptual Maximum Model
+- Enhanced comfort features
+- Additional utilities
+- Premium insulation options
+- Higher quality finishes
+- Additional budget allocation: ₱291,000
+- Includes:
+  * Utilities
+  * Insulation
+  * Additional finishes
+  * Double walls
+  * Other necessary alterations
+
+## Cost Implication Notes
+
+1. Container Quality Impact
+   - Class A vs Class C pricing differential
+   - Reduced maintenance requirements
+   - Better structural integrity
+   - Longer expected lifespan
+
+2. Modification Efficiency
+   - Single unit modifications vs double unit
+   - Reduced labor requirements
+   - Streamlined installation process
+   - Potentially lower total modification cost
+
+3. Finish Standardization
+   - All base models maintain minimum standards
+   - Consistent basic feature set across versions
+   - Upgradeable design for future improvements
+   - Standard utility configurations
+
+## Research Gaps
+
+1. Direct Cost Comparison Limitations
+   - Different container classes (A vs C)
+   - Different time periods
+   - Market price variations
+   - Labor cost changes
+
+2. Modification Cost Uncertainties
+   - Updated pricing needed for Class A modifications
+   - Current market rates for structural work
+   - Modern insulation costs
+   - Contemporary finishing costs
+
+3. Performance Data
+   - Long-term durability comparison
+   - Maintenance cost differences
+   - Energy efficiency variations
+   - Occupant comfort metrics
