@@ -2,7 +2,7 @@
 
 ## Latest Updates
 
-Last Updated: February 2, 2025
+Last Updated: March 3, 2025
 
 ### Completed Components
 
@@ -14,27 +14,21 @@ Last Updated: February 2, 2025
   - Cost Breakdown Comparison
   - Cost per Square Meter:
   - Resource Usage Comparison (% of Traditional)
+  - add voicenote summaries
+  - Cost efficiency metrics
+  - Workflow-tree - mermaid
+  - Research progress dashboard - update
+  - Limitations - update
+  - Milanote WIP idea board
+- Created and processed raw data found in /data-practice
 
 ### Pending Tasks
-- add voicenote summaries
-- ROI
-- Cost efficiency metrics
-- Workflow-tree - mermaid
-- Integration of sustainability metrics
+- Moving to SQL and Python (idk why I forgor)
+- ROI (need research and read,,, else I'm gonna interpolate)
 - Scalability + Graph
 - Efficiency Metrics + Graph
-- Research progress dashboard - update
-- Limitations - update
-- Construction timeline comparisons
-- Milanote WIP idea board
+- Construction timeline comparisons (extremely varied so maybe not)
 
-## To consider(?)
+## Data Analysis practice
 
-1. Sustainability analysis
-2. Environmental impact metrics quantification
-
-## Data Analysis practice (will probably make a separate git)
-
-- Clean messy shipping data
-- use container price changes - multiple views
-- Use Containerized Freight index - possibly useless, or can pivot
+- Interpolated various data to make a "messy" data set to clean and process. Used Claude to create the data set, used Excel and Power Query integration to clean data. 
