@@ -36,7 +36,7 @@ VALUES
   ('Material Usage', 100, 25, 'CE10_Proj.pdf: A container home can be constructed of about 75% recycled materials by weight');
 
 -- Insert data into cost_breakdown table (for conceptual-models.tsx)
-INSERT INTO cost_breakdown (model_name, component_name, cost, citation)
+INSERT INTO cost_breakdownConcMod (model_name, component_name, cost, citation)
 VALUES
   -- Container (Base)
   ('Container (Base)', 'Container Cost', 124826.80, 'Current market rates'),

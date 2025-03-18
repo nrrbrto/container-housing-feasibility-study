@@ -18,8 +18,8 @@ CREATE TABLE resource_usage (
     citation TEXT                          
 );
 
--- Cost Breakdown Table
-CREATE TABLE cost_breakdown (
+-- Cost Breakdown Table for Conceptual Models
+CREATE TABLE cost_breakdownConcMod (
     id SERIAL PRIMARY KEY,
     model_name VARCHAR(50) NOT NULL,        -- e.g., Container (Base), Container (Max)
     component_name VARCHAR(50) NOT NULL,    -- e.g., Container Cost, Fenestration, Alterations
@@ -57,3 +57,20 @@ CREATE TABLE cost_breakdown (
     citation TEXT                           
 );
 
+-- Housing Models Table
+CREATE TABLE housing_models (
+    id SERIAL PRIMARY KEY,
+    model_name VARCHAR(50) NOT NULL,
+    total_cost DECIMAL(12,2) NOT NULL,
+    cost_per_sqm DECIMAL(10,2) NOT NULL,
+    construction_time_days INTEGER NOT NULL,
+    waste_percentage DECIMAL(5,2) NOT NULL
+);
+
+-- Data for the housing_models table
+INSERT INTO housing_models (model_name, total_cost, cost_per_sqm, construction_time_days, waste_percentage) 
+VALUES 
+    ('Traditional Housing', 708000, 29500, 150, 30),
+    ('ODD Cubes Basic', 420000, 17500, 90, 15),
+    ('Container (Base)', 323343, 13473, 68, 9),
+    ('Container (Max)', 580005, 24167, 68, 9);
