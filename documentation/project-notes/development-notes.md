@@ -23,12 +23,16 @@ Last Updated: March 3, 2025
 - Created and processed raw data found in /data-practice
 
 ### Pending Tasks
-- Moving to SQL and Python (idk why I forgor)
-- ROI (need research and read,,, else I'm gonna interpolate)
-- Scalability + Graph
-- Efficiency Metrics + Graph
-- Construction timeline comparisons (extremely varied so maybe not)
+
+- To work on Python and Tableau integration
+- Transfer and read other research papers for:
+  - ROI (need to add proper data from researches I)
+  - Scalability (or put into implementation test)
+  - Construction timeline comparisons (extremely varied so maybe not)
+- Efficiency Metrics
+- Test SQL data import if it checks out
+- Feed processed csv data to database using SQL
 
 ## Data Analysis practice
 
-- Interpolated various data to make a "messy" data set to clean and process. Used Claude to create the data set, used Excel and Power Query integration to clean data. 
+- Interpolated various data to make a "messy" data set to clean and process. Used Claude to create the data set, used Excel and Power Query integration to clean data.
