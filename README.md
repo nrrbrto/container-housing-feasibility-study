@@ -1,12 +1,12 @@
-Container Housing Analysis Project
+## Container Housing Analysis Project
 
-- Overview -
+### Overview
 
 This project analyzes the feasibility of recycling shipping containers into sustainable housing options for urban development, primarily relating to a Philippine setting (wherever possible) with a focus on cost comparison, sustainability metrics, and practical implementation challenges. Based on a college analysis paper I previously created, this project demonstrates data analytics, visualization, and research skills. Currently working with AI such as Claude and DeepSeek to streamline tasks and analysis, as well as learning and familiarizing myself again with coding.
 
 Skills used: Data entry, analysis, and visualization, research, problem-solving, coding, etc.
 
-- Completed Work -
+### Completed Work
 
 Established PostgreSQL database with tables for housing models, cost breakdowns, container prices, and efficiency metrics
 Created SQL schema, views, and stored procedures for data analysis
@@ -16,7 +16,7 @@ Developed analysis modules for price forecasting and cost comparison
 Created analysis queries for ROI evaluation and cost efficiency calculations
 Built visualization components for housing model comparisons and price trends
 
-- Work in Progress -
+### Work in Progress -
 Python > Tableau
 Python analysis pipelines for sensitivity and Monte Carlo simulation
 Streamlit dashboard implementation for interactive analysis
@@ -24,7 +24,7 @@ Tableau integration for advanced visualizations
 Comprehensive report generation with findings
 Link query results and visualizations for straightforward progress evaluation
 
-- Project Structure -
+### Project Structure -
 ```plaintext
 Container Housing Feasibility/
 ├── .vscode/                          # VS Code configuration
@@ -67,7 +67,7 @@ Container Housing Feasibility/
     └── exports/                      # Exported visualizations
 ```
 
-- Database Structure (using local PostgreSQL connection) -
+### Database Structure (using local PostgreSQL connection)
 ```plaintext
 container_housing (Database)
 └── public (Schema)
@@ -95,7 +95,7 @@ container_housing (Database)
         └── analyze_housing_sensitivity(numeric, numeric, integer)
 ```
 
-- Technology Stack -
+### Technology Stack
 
 Database: PostgreSQL
 Programming: Python, SQL
@@ -103,3 +103,132 @@ Data Processing: Pandas, NumPy, SQLAlchemy
 Analysis: Scikit-learn, SciPy
 Visualization: Plotly, Streamlit, Tableau
 Development: Git, VSCode
+
+---
+
+## Setup Instructions
+
+### 1. Environment Setup
+
+Create and activate a virtual environment to keep project dependencies isolated from other Python projects. This prevents conflicts between package versions. (I forgot but you should):
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows
+venv\Scripts\activate
+# Mac/Linux
+source venv/bin/activate
+```
+In VS Code, you can select this environment:
+
+- Press Ctrl+Shift+P (or Cmd+Shift+P on Mac)
+- Type "Python: Select Interpreter"
+- Choose the interpreter from your newly created venv
+
+Install required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Database Configuration
+
+Ensure PostgreSQL is installed and running. The database connection parameters are:
+
+- Host: localhost
+- Database: container_housing
+- User: postgres
+- Password: postgres
+- Port: 5432
+
+Then:
+
+- Use referred PostgreSQL client
+- Create a new database named container_housing
+- Run the schema scripts from the SQL folder
+
+```bash
+# Create database
+psql -U postgres -c CREATE DATABASE container_housing;
+
+# Run schema creation and data import scripts
+psql -U postgres -d container_housing -f SQL/schema.sql
+psql -U postgres -d container_housing -f SQL/schema_container_prices.sql
+psql -U postgres -d container_housing -f SQL/import_data.sql
+psql -U postgres -d container_housing -f SQL/import_container_data.py
+```
+
+...or run and setup everything using preferred editor.
+
+### 3. Running the Analysis
+
+- Navigate to the Python folder
+- Run run_analysis.py to execute all analysis modules
+- Results will be displayed in the terminal and saved to the database
+
+### 4. Launching the Dashboard
+
+Start the Streamlit dashboard:
+- Navigate to the Python folder
+- Run run_dashboard.py
+- The dashboard will open in the default browser at http://localhost:8501
+
+---
+
+## Analysis Modules
+
+### Price Forecasting
+- Analyzes historical container price trends
+- Builds predictive models for future container prices
+- Generates price forecasts with prediction intervals
+
+### Cost Analysis
+- Compares total costs of different housing models
+- Analyzes cost breakdown by component (materials, labor, finishings)
+- Calculates cost efficiency metrics relative to traditional housing
+
+### Sensitivity Analysis
+- Simulates different economic scenarios using Monte Carlo simulation [WIP, finding proper data to use]
+- Analyzes impact of key parameters:
+  - Container price fluctuations (-30% to +70%)
+  - Rental income variations (₱8,000 to ₱20,000)
+  - Expected lifespan (15-40 years)
+- Identifies optimal scenarios for each housing model:
+  - Highest ROI scenarios
+  - Shortest payback periods
+  - Statistical performance metrics (mean, min, max, std)
+
+## Result Analysis
+
+The sensitivity analysis module processes simulation results to:
+
+- Identify optimal scenarios for each housing model
+- Find configurations with highest ROI potential
+- Determine conditions for shortest payback periods
+- Calculate statistical distributions (mean, min, max, standard deviation)
+- Rank models based on performance across varied economic conditions
+
+---
+
+## References
+
+[WIP, still reading]
+
+## Commands Summary
+
+```bash
+# Run analysis pipeline
+python run_analysis.py
+
+# Run dashboard
+python run_dashboard.py
+```
+
+## Notes
+
+- All ROI calculations are based on placeholder values for demonstration
+- The sensitivity analysis uses Monte Carlo simulation with 500 iterations
+- Container price forecasts are based on historical data from 2017-2024
