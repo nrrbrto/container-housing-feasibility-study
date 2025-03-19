@@ -1,0 +1,14 @@
+# Database
+pip install psycopg2-binary SQLAlchemy
+
+# Data processing
+pip install pandas numpy
+
+# Machine Learning
+pip install scikit-learn
+
+# Visualization
+pip install plotly streamlit matplotlib seaborn
+
+# Utilities
+pip install python-dotenv openpyxl
