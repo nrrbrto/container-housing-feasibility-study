@@ -1,0 +1,25 @@
+container_id,ship_date,delivery_date,producer,producer_type,container_type,container_qty,origin,destination,freight_index,base_price,priority,status
+CS22_001,6/1/2022,11/1/2022,Global Shipping,Carrier,40 ft HC CW,3,Rotterdam,Singapore,4910.19,3423.21,Medium,In_Transit
+CS22_002,16/01/2022,21/01/2022,Ocean Wave,Forwarder,40 ft HC CW,5,Dubai,Hamburg,5110.61,3423.21,HIGH,In_Transit
+CS22_003,4/2/2022,9/2/2022,Cargo Masters,Broker,40 ft HC CW,1,Shanghai,Los Angeles,4722.13,3284.18,Low,Processing
+CS22_004,14/02/2022,19/02/2022,Sea Transit,Agent,40 ft HC CW,4,Rotterdam,Singapore,4914.87,3284.18,Medium,Completed
+CS22_005,4/3/2022,9/3/2022,ShipEasy,Direct,40 ft HC CW,4,Dubai,Hamburg,4345.42,3508.14,HIGH,In_Transit
+CS22_006,14/03/2022,19/03/2022,Global Shipping,Partner,40 ft HC CW,3,Shanghai,Los Angeles,4522.78,3508.14,Low,Delivered
+CS22_007,7/4/2022,12/4/2022,Ocean Wave,Carrier,40 ft HC CW,1,Rotterdam,Singapore,4093.75,3445.58,Medium,Completed
+CS22_008,17/04/2022,22/04/2022,Cargo Masters,Forwarder,40 ft HC CW,5,Dubai,Hamburg,4260.85,3445.58,HIGH,Processing
+CS22_009,5/5/2022,10/5/2022,Sea Transit,Broker,40 ft HC CW,3,Shanghai,Los Angeles,4091.89,3388.88,Low,Delivered
+CS22_010,15/05/2022,20/05/2022,ShipEasy,Agent,40 ft HC CW,2,Rotterdam,Singapore,4258.91,3388.88,Medium,Completed
+CS22_011,5/6/2022,10/6/2022,Global Shipping,Direct,40 ft HC CW,5,Dubai,Hamburg,4131.78,3375.52,HIGH,In_Transit
+CS22_012,15/06/2022,20/06/2022,Ocean Wave,Partner,40 ft HC CW,1,Shanghai,Los Angeles,4300.42,3375.52,Low,In_Transit
+CS22_013,7/7/2022,12/7/2022,Cargo Masters,Carrier,40 ft HC CW,4,Rotterdam,Singapore,3810.04,3278.26,Medium,Processing
+CS22_014,17/07/2022,22/07/2022,Sea Transit,Forwarder,40 ft HC CW,2,Dubai,Hamburg,3965.56,3278.26,HIGH,Completed
+CS22_015,5/8/2022,10/8/2022,ShipEasy,Broker,40 ft HC CW,4,Shanghai,Los Angeles,3091.21,3168.62,Low,In_Transit
+CS22_016,15/08/2022,20/08/2022,Global Shipping,Agent,40 ft HC CW,2,Rotterdam,Singapore,3217.39,3168.62,Medium,Delivered
+CS22_017,5/9/2022,10/9/2022,Ocean Wave,Direct,40 ft HC CW,5,Dubai,Hamburg,1884.54,2656.75,HIGH,Completed
+CS22_018,15/09/2022,20/09/2022,Cargo Masters,Partner,40 ft HC CW,4,Shanghai,Los Angeles,1961.46,2656.75,Low,Processing
+CS22_019,8/10/2022,13/10/2022,Sea Transit,Carrier,40 ft HC CW,3,Rotterdam,Singapore,1663.75,2640.37,Medium,Delivered
+CS22_020,18/11/2022,23/10/2022,ShipEasy,Forwarder,40 ft HC CW,1,Dubai,Hamburg,1731.65,2640.37,HIGH,Completed
+CS22_021,5/11/2022,10/11/2022,Global Shipping,Agent,40 ft HC CW,4,Rotterdam,Singapore,1205.3,2635.78,Medium,In_Transit
+CS22_022,15/11/2022,20/11/2022,Ocean Wave,Direct,40 ft HC CW,2,Dubai,Hamburg,1254.5,2635.78,HIGH,Delivered
+CS22_023,8/12/2022,13/12/2022,Cargo Masters,Partner,40 ft HC CW,3,Shanghai,Los Angeles,1085.35,2619.72,HIGH,In_Transit
+CS22_024,18/12/2022,23/12/2022,Sea Transit,Carrier,40 ft HC CW,3,Rotterdam,Singapore,1129.65,2619.72,Medium,Completed

@@ -1,5 +1,5 @@
--- views.sql for PostgreSQL
--- Create view for ROI calculations
+-- [WIP!!!] data is interpolated and used solely for demonstration
+-- View for ROI calculations
 
 CREATE VIEW housing_roi AS
 WITH params AS (

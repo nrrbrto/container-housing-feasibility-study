@@ -1,0 +1,25 @@
+container_id,ship_date,delivery_date,producer,producer_type,container_type,container_qty,origin,destination,freight_index,base_price,priority,status
+CS21_001,10/1/2021,15/01/2021,Global Shipping,Direct,40 ft HC CW,4,Dubai,Hamburg,2804.47,4071.73,HIGH,In_Transit
+CS21_002,20/01/2021,25/01/2021,Ocean Wave,Partner,40 ft HC CW,3,Shanghai,Los Angeles,2918.93,4071.73,Low,In_Transit
+CS21_003,5/2/2021,10/2/2021,Cargo Masters,Carrier,40 ft HC CW,5,Rotterdam,Singapore,2719.79,3935.67,Medium,Processing
+CS21_004,15/02/2021,20/02/2021,Sea Transit,Forwarder,40 ft HC CW,2,Dubai,Hamburg,2830.81,3935.67,HIGH,Completed
+CS21_005,5/3/2021,10/3/2021,ShipEasy,Broker,40 ft HC CW,2,Shanghai,Los Angeles,2519.29,4307.26,Low,In_Transit
+CS21_006,15/03/2021,20/03/2021,Global Shipping,Agent,40 ft HC CW,4,Rotterdam,Singapore,2622.11,4307.26,Medium,Delivered
+CS21_007,8/4/2021,13/04/2021,Ocean Wave,Direct,40 ft HC CW,3,Dubai,Hamburg,3038.69,4560.04,HIGH,Completed
+CS21_008,18/04/2021,23/04/2021,Cargo Masters,Partner,40 ft HC CW,1,Shanghai,Los Angeles,3162.71,4560.04,Low,Processing
+CS21_009,5/5/2021,10/5/2021,Sea Transit,Carrier,40 ft HC CW,3,Rotterdam,Singapore,3425.88,5142.27,Medium,Delivered
+CS21_010,15/05/2021,20/05/2021,ShipEasy,Forwarder,40 ft HC CW,4,Dubai,Hamburg,3565.72,5142.27,HIGH,Completed
+CS21_011,8/6/2021,13/06/2021,Global Shipping,Broker,40 ft HC CW,1,Shanghai,Los Angeles,3709.69,6615.43,Low,In_Transit
+CS21_012,18/06/2021,23/06/2021,Ocean Wave,Agent,40 ft HC CW,4,Rotterdam,Singapore,3861.11,6615.43,Medium,In_Transit
+CS21_013,8/7/2021,13/07/2021,Cargo Masters,Direct,40 ft HC CW,5,Dubai,Hamburg,4112.27,4735.52,HIGH,Processing
+CS21_014,18/07/2021,23/07/2021,Sea Transit,Partner,40 ft HC CW,5,Shanghai,Los Angeles,4280.13,4735.52,Low,Completed
+CS21_015,8/8/2021,13/08/2021,ShipEasy,Carrier,40 ft HC CW,1,Rotterdam,Singapore,4297.89,4915.5,Medium,In_Transit
+CS21_016,18/08/2021,23/08/2021,Global Shipping,Forwarder,40 ft HC CW,5,Dubai,Hamburg,4473.31,4915.5,HIGH,Delivered
+CS21_017,8/9/2021,13/09/2021,Ocean Wave,Broker,40 ft HC CW,1,Shanghai,Los Angeles,4550.92,4209.95,Low,Completed
+CS21_018,18/09/2021,23/09/2021,Cargo Masters,Agent,40 ft HC CW,2,Rotterdam,Singapore,4736.68,4209.95,Medium,Processing
+CS21_019,8/10/2021,13/10/2021,Sea Transit,Direct,40 ft HC CW,3,Dubai,Hamburg,4475.95,4720.62,HIGH,Delivered
+CS21_020,18/10/2021,23/10/2021,ShipEasy,Partner,40 ft HC CW,4,Shanghai,Los Angeles,4658.65,4720.62,Low,Completed
+CS21_021,5/11/2021,10/11/2021,Ocean Wave,Partner,40 ft HC CW,2,Rotterdam,Singapore,4509.96,4284.2,Medium,In_Transit
+CS21_022,15/11/2021,20/11/2021,Cargo Masters,Carrier,40 ft HC CW,4,Dubai,Hamburg,4694.04,4284.2,HIGH,Delivered
+CS21_023,8/12/2021,13/12/2021,Sea Transit,Forwarder,40 ft HC CW,1,Shanghai,Los Angeles,4945.77,3533.33,HIGH,In_Transit
+CS21_024,18/12/2021,23/12/2021,ShipEasy,Broker,40 ft HC CW,3,Rotterdam,Singapore,5147.63,3533.33,Medium,Completed

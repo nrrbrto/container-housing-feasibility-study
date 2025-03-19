@@ -15,6 +15,6 @@ SELECT
         WHEN AVG(percent_change) BETWEEN -10 AND -2 THEN 'Moderate Decrease'
         ELSE 'Sharp Decrease'
     END AS trend_classification
--- FROM container_prices
+FROM container_prices
 GROUP BY EXTRACT(YEAR FROM date), EXTRACT(QUARTER FROM date)
 ORDER BY year, quarter;
