@@ -1,0 +1,25 @@
+container_id,ship_date,delivery_date,producer,producer_type,container_type,container_qty,origin,destination,freight_index,base_price,priority,status
+CS23_001,6/1/2023,11/1/2023,Global Shipping,Broker,40 ft HC CW,3,Shanghai,Los Angeles,1009.2,2627.46,Low,In_Transit
+CS23_002,16/01/2023,21/01/2023,Ocean Wave,Agent,40 ft HC CW,4,Rotterdam,Singapore,1050.4,2627.46,Medium,In_Transit
+CS23_003,5/2/2023,10/2/2023,Cargo Masters,Direct,40 ft HC CW,2,Dubai,Hamburg,927.75,2613.53,HIGH,Processing
+CS23_004,15/02/2023,20/02/2023,Sea Transit,Partner,40 ft HC CW,4,Shanghai,Los Angeles,965.61,2613.53,Low,Completed
+CS23_005,5/3/2023,10/3/2023,ShipEasy,Carrier,40 ft HC CW,3,Rotterdam,Singapore,905.3,2590.85,Medium,In_Transit
+CS23_006,15/03/2023,20/03/2023,Global Shipping,Forwarder,40 ft HC CW,5,Dubai,Hamburg,942.26,2590.85,HIGH,Delivered
+CS23_007,6/4/2023,11/4/2023,Ocean Wave,Broker,40 ft HC CW,4,Shanghai,Los Angeles,979.74,2596.26,Low,Completed
+CS23_008,16/04/2023,21/04/2023,Cargo Masters,Agent,40 ft HC CW,6,Rotterdam,Singapore,1019.72,2596.26,Medium,Processing
+CS23_009,6/5/2023,11/5/2023,Sea Transit,Direct,40 ft HC CW,5,Dubai,Hamburg,963.79,2586.56,HIGH,Delivered
+CS23_010,16/05/2023,21/05/2023,ShipEasy,Partner,40 ft HC CW,3,Shanghai,Los Angeles,1003.13,2586.56,Low,Completed
+CS23_011,6/6/2023,11/6/2023,Global Shipping,Carrier,40 ft HC CW,4,Rotterdam,Singapore,934.53,2583.17,Medium,In_Transit
+CS23_012,16/06/2023,21/06/2023,Ocean Wave,Forwarder,40 ft HC CW,2,Dubai,Hamburg,972.67,2583.17,HIGH,In_Transit
+CS23_013,6/7/2023,11/7/2023,Cargo Masters,Broker,40 ft HC CW,4,Shanghai,Los Angeles,1008.62,2568.65,Low,Processing
+CS23_014,16/07/2023,21/07/2023,Sea Transit,Agent,40 ft HC CW,5,Rotterdam,Singapore,1049.78,2568.65,Medium,Completed
+CS23_015,6/8/2023,11/8/2023,ShipEasy,Direct,40 ft HC CW,3,Dubai,Hamburg,993.52,2565.52,HIGH,In_Transit
+CS23_016,16/08/2023,21/08/2023,Global Shipping,Partner,40 ft HC CW,4,Shanghai,Los Angeles,1034.08,2565.52,Low,Delivered
+CS23_017,6/9/2023,11/9/2023,Ocean Wave,Carrier,40 ft HC CW,5,Rotterdam,Singapore,869.11,2548.18,Medium,Completed
+CS23_018,16/09/2023,21/09/2023,Cargo Masters,Forwarder,40 ft HC CW,3,Dubai,Hamburg,904.59,2548.18,HIGH,Processing
+CS23_019,7/10/2023,12/10/2023,Sea Transit,Broker,40 ft HC CW,5,Shanghai,Los Angeles,992.35,2550.05,Low,Delivered
+CS23_020,17/10/2023,22/10/2023,ShipEasy,Agent,40 ft HC CW,4,Rotterdam,Singapore,1032.85,2550.05,Medium,Completed
+CS23_021,5/11/2023,10/11/2023,ShipEasy,Forwarder,40 ft HC CW,4,Rotterdam,Singapore,973.35,2552.08,Medium,In_Transit
+CS23_022,15/11/2023,20/11/2023,Global Shipping,Broker,40 ft HC CW,3,Dubai,Hamburg,1013.07,2552.08,HIGH,Delivered
+CS23_023,8/12/2023,13/12/2023,Ocean Wave,Agent,40 ft HC CW,3,Shanghai,Los Angeles,1724.41,2560.14,HIGH,In_Transit
+CS23_024,18/12/2023,23/12/2023,Cargo Masters,Direct,40 ft HC CW,4,Rotterdam,Singapore,1794.79,2560.14,Medium,Completed

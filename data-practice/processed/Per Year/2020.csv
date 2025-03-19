@@ -1,0 +1,25 @@
+container_id,ship_date,delivery_date,producer,producer_type,container_type,container_qty,origin,destination,freight_index,base_price,priority,status
+CS20_001,8/1/2020,13/01/2020,Global Shipping,Broker,40 ft HC CW,1,Shanghai,Los Angeles,961.57,1735.97,Low,In_Transit
+CS20_002,18/01/2020,23/01/2020,Ocean Wave,Agent,40 ft HC CW,4,Rotterdam,Singapore,1000.81,1735.97,Medium,In_Transit
+CS20_003,5/2/2020,10/2/2020,Cargo Masters,Direct,40 ft HC CW,2,Dubai,Hamburg,858.24,1898.27,HIGH,Processing
+CS20_004,15/02/2020,20/02/2020,Sea Transit,Partner,40 ft HC CW,3,Shanghai,Los Angeles,893.28,1898.27,Low,Completed
+CS20_005,8/3/2020,13/03/2020,ShipEasy,Carrier,40 ft HC CW,2,Rotterdam,Singapore,871.4,2074.1,Medium,In_Transit
+CS20_006,18/03/2020,23/03/2020,Global Shipping,Forwarder,40 ft HC CW,5,Dubai,Hamburg,906.96,2074.1,HIGH,Delivered
+CS20_007,8/4/2020,13/04/2020,Ocean Wave,Broker,40 ft HC CW,5,Shanghai,Los Angeles,835.22,1973.7,Low,Completed
+CS20_008,18/04/2020,23/04/2020,Cargo Masters,Agent,40 ft HC CW,4,Rotterdam,Singapore,869.32,1973.7,Medium,Processing
+CS20_009,8/5/2020,13/05/2020,Sea Transit,Direct,40 ft HC CW,4,Dubai,Hamburg,902.17,2037.92,HIGH,Delivered
+CS20_010,18/05/2020,23/05/2020,ShipEasy,Partner,40 ft HC CW,3,Shanghai,Los Angeles,938.59,2037.92,Low,Completed
+CS20_011,8/6/2020,13/06/2020,Global Shipping,Carrier,40 ft HC CW,4,Rotterdam,Singapore,981.27,2065.78,Medium,In_Transit
+CS20_012,18/06/2020,23/06/2020,Ocean Wave,Forwarder,40 ft HC CW,5,Dubai,Hamburg,1021.33,2065.78,HIGH,In_Transit
+CS20_013,8/7/2020,13/07/2020,Cargo Masters,Broker,40 ft HC CW,1,Shanghai,Los Angeles,1081.43,1973.78,Low,Processing
+CS20_014,18/07/2020,23/07/2020,Sea Transit,Agent,40 ft HC CW,3,Rotterdam,Singapore,1125.57,1973.78,Medium,Completed
+CS20_015,8/8/2020,13/08/2020,ShipEasy,Direct,40 ft HC CW,1,Dubai,Hamburg,1238.03,2387.25,HIGH,In_Transit
+CS20_016,18/08/2020,23/08/2020,Global Shipping,Partner,40 ft HC CW,5,Shanghai,Los Angeles,1288.57,2387.25,Low,Delivered
+CS20_017,8/9/2020,13/09/2020,Ocean Wave,Carrier,40 ft HC CW,4,Rotterdam,Singapore,1414.14,2312.53,Medium,Completed
+CS20_018,18/09/2020,23/09/2020,Cargo Masters,Forwarder,40 ft HC CW,2,Dubai,Hamburg,1471.86,2312.53,HIGH,Processing
+CS20_019,8/10/2020,13/10/2020,Sea Transit,Broker,40 ft HC CW,1,Shanghai,Los Angeles,1499.4,2314.33,Low,Delivered
+CS20_020,18/10/2020,23/10/2020,ShipEasy,Agent,40 ft HC CW,3,Rotterdam,Singapore,1560.6,2314.33,Medium,Completed
+CS20_021,5/11/2020,10/11/2020,Cargo Masters,Forwarder,40 ft HC CW,5,Rotterdam,Singapore,2007.33,2473.81,Medium,In_Transit
+CS20_022,15/11/2020,20/11/2020,Sea Transit,Broker,40 ft HC CW,2,Dubai,Hamburg,2089.27,2473.81,HIGH,Delivered
+CS20_023,8/12/2020,13/12/2020,ShipEasy,Agent,40 ft HC CW,3,Shanghai,Los Angeles,2589.06,3008.21,HIGH,In_Transit
+CS20_024,18/12/2020,23/12/2020,Global Shipping,Direct,40 ft HC CW,4,Rotterdam,Singapore,2694.74,3008.21,Medium,Completed
