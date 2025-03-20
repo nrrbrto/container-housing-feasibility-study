@@ -51,3 +51,34 @@ BEGIN
         CREATE INDEX idx_shipping_container_price_ship_date ON shipping_container_prices(ship_date);
     END IF;
 END $$;
+
+
+-- Create the container_price_forecast table if it does not exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'container_price_forecast') THEN
+        CREATE TABLE container_price_forecast (
+            id SERIAL PRIMARY KEY,
+            year INTEGER NOT NULL,
+            quarter INTEGER NOT NULL,
+            time_index INTEGER NOT NULL,
+            year_fraction NUMERIC(10,2) NOT NULL,
+            avg_price NUMERIC(12,2),
+            lower_bound NUMERIC(12,2),
+            upper_bound NUMERIC(12,2),
+            avg_freight_index NUMERIC(12,2),
+            freight_lower_bound NUMERIC(12,2),
+            freight_upper_bound NUMERIC(12,2),
+            time_label VARCHAR(20),
+            calculated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    END IF;
+END $$;
+
+-- Create an index for faster queries
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_container_price_forecast_year_quarter') THEN
+        CREATE INDEX idx_container_price_forecast_year_quarter ON container_price_forecast(year, quarter);
+    END IF;
+END $$;

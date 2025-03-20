@@ -122,63 +122,142 @@ if page == "Cost Analysis":
 # Price Forecasting Page
 # Modified code for the Price Forecasting Page in app.py
 elif page == "Price Forecasting":
-    st.header("Container Price Forecasting")
+    st.header("Container Price and Freight Index Forecasting")
     
     # Load data
     price_trends = load_data("container_price_trends")
+    price_forecast = load_data("price_forecast")  # This should now include both metrics
     
-    # Historical price trends
-    st.subheader("Historical Container Price Trends")
+    # Create tabs for different visualizations
+    price_tabs = st.tabs(["Container Prices", "Freight Index"])
     
-    # Create time series for historical prices
-    if not price_trends.empty:
-        # Debug: Show the actual columns in the dataframe
-        st.write("Available columns:", list(price_trends.columns))
+    with price_tabs[0]:  # Container Price forecast
+        st.subheader("Container Price Historical Data and Forecast")
         
-        # Check if required columns exist
-        if 'year' in price_trends.columns:
-            # If 'quarter' doesn't exist, use alternative approach
-            if 'quarter' not in price_trends.columns:
-                if 'month' in price_trends.columns:
-                    # If month exists, create a time label using year and month
-                    price_trends['time_label'] = price_trends['year'].astype(str) + "-" + price_trends['month'].astype(str)
-                    sort_columns = ['year', 'month']
-                else:
-                    # If neither quarter nor month exists, just use year
-                    price_trends['time_label'] = price_trends['year'].astype(str)
-                    sort_columns = ['year']
-            else:
-                # If quarter exists, use year and quarter
-                price_trends['time_label'] = price_trends['year'].astype(str) + " Q" + price_trends['quarter'].astype(str)
-                sort_columns = ['year', 'quarter']
+        if not price_trends.empty and not price_forecast.empty:
+            # Prepare time labels
+            price_trends['time_label'] = price_trends['year'].astype(str) + " Q" + price_trends['quarter'].astype(str)
+            price_forecast['time_label'] = price_forecast['year'].astype(str) + " Q" + price_forecast['quarter'].astype(str)
             
-            # Sort the data
-            sorted_data = price_trends.sort_values(sort_columns)
+            # Create plot
+            fig = px.line(
+                price_trends,
+                x='time_label',
+                y='avg_price',
+                title="Historical Container Prices",
+                labels={'avg_price': 'Price', 'time_label': 'Time Period'},
+                markers=True
+            )
             
-            # Check which value column to use
-            value_column = None
-            for possible_column in ['avg_price', 'price', 'freight_index', 'avg_freight_index']:
-                if possible_column in price_trends.columns:
-                    value_column = possible_column
-                    break
-            
-            if value_column:
-                fig = px.line(
-                    sorted_data,
-                    x='time_label',
-                    y=value_column,
-                    title="Historical Container Prices",
-                    labels={value_column: 'Price', 'time_label': 'Time Period'},
-                    markers=True
+            # Add forecast line
+            fig.add_trace(
+                go.Scatter(
+                    x=price_forecast['time_label'],
+                    y=price_forecast['avg_price'],
+                    mode='lines+markers',
+                    name='Price Forecast',
+                    line=dict(color='red', dash='dash')
                 )
-                fig.update_layout(xaxis_title="Time Period", yaxis_title="Price")
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.warning("No price column found in the data")
+            )
+            
+            # Add confidence interval
+            fig.add_trace(
+                go.Scatter(
+                    x=price_forecast['time_label'],
+                    y=price_forecast['upper_bound'],
+                    mode='lines',
+                    name='Upper Bound',
+                    line=dict(width=0),
+                    showlegend=False
+                )
+            )
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=price_forecast['time_label'],
+                    y=price_forecast['lower_bound'],
+                    mode='lines',
+                    name='Lower Bound',
+                    line=dict(width=0),
+                    fill='tonexty',
+                    fillcolor='rgba(255, 0, 0, 0.1)',
+                    showlegend=False
+                )
+            )
+            
+            fig.update_layout(
+                xaxis_title="Time Period",
+                yaxis_title="Container Price",
+                hovermode="x unified"
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
         else:
-            st.warning("Required column 'year' not found in the data")
-    else:
-        st.warning("No historical price data available")
+            st.warning("No historical price data or forecast available")
+    
+    with price_tabs[1]:  # Freight Index forecast
+        st.subheader("Freight Index Historical Data and Forecast")
+        
+        if not price_trends.empty and not price_forecast.empty:
+            # Prepare time labels
+            price_trends['time_label'] = price_trends['year'].astype(str) + " Q" + price_trends['quarter'].astype(str)
+            price_forecast['time_label'] = price_forecast['year'].astype(str) + " Q" + price_forecast['quarter'].astype(str)
+            
+            # Create plot
+            fig = px.line(
+                price_trends,
+                x='time_label',
+                y='avg_freight_index',
+                title="Historical Freight Index",
+                labels={'avg_freight_index': 'Freight Index', 'time_label': 'Time Period'},
+                markers=True
+            )
+            
+            # Add forecast line
+            fig.add_trace(
+                go.Scatter(
+                    x=price_forecast['time_label'],
+                    y=price_forecast['avg_freight_index'],
+                    mode='lines+markers',
+                    name='Freight Index Forecast',
+                    line=dict(color='red', dash='dash')
+                )
+            )
+            
+            # Add confidence interval
+            fig.add_trace(
+                go.Scatter(
+                    x=price_forecast['time_label'],
+                    y=price_forecast['freight_upper_bound'],
+                    mode='lines',
+                    name='Upper Bound',
+                    line=dict(width=0),
+                    showlegend=False
+                )
+            )
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=price_forecast['time_label'],
+                    y=price_forecast['freight_lower_bound'],
+                    mode='lines',
+                    name='Lower Bound',
+                    line=dict(width=0),
+                    fill='tonexty',
+                    fillcolor='rgba(255, 0, 0, 0.1)',
+                    showlegend=False
+                )
+            )
+            
+            fig.update_layout(
+                xaxis_title="Time Period",
+                yaxis_title="Freight Index",
+                hovermode="x unified"
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning("No historical freight data or forecast available")
 
 # Efficiency Metrics Page
 elif page == "Efficiency Metrics":
