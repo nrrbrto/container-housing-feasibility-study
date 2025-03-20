@@ -135,9 +135,9 @@ elif page == "Price Forecasting":
         st.subheader("Container Price Historical Data and Forecast")
         
         if not price_trends.empty and not price_forecast.empty:
-            # Prepare time labels
-            price_trends['time_label'] = price_trends['year'].astype(str) + " Q" + price_trends['quarter'].astype(str)
-            price_forecast['time_label'] = price_forecast['year'].astype(str) + " Q" + price_forecast['quarter'].astype(str)
+            # Convert year and month to integers and format the time_label
+            price_trends['time_label'] = price_trends['year'].astype(int).astype(str) + "-M" + price_trends['month'].astype(int).astype(str)
+            price_forecast['time_label'] = price_forecast['year'].astype(int).astype(str) + "-M" + price_forecast['month'].astype(int).astype(str)
             
             # Create plot
             fig = px.line(
@@ -200,8 +200,9 @@ elif page == "Price Forecasting":
         
         if not price_trends.empty and not price_forecast.empty:
             # Prepare time labels
-            price_trends['time_label'] = price_trends['year'].astype(str) + " Q" + price_trends['quarter'].astype(str)
-            price_forecast['time_label'] = price_forecast['year'].astype(str) + " Q" + price_forecast['quarter'].astype(str)
+            price_trends['time_label'] = price_trends['year'].astype(int).astype(str) + "-M" + price_trends['month'].astype(int).astype(str)
+            price_forecast['time_label'] = price_forecast['year'].astype(int).astype(str) + "-M" + price_forecast['month'].astype(int).astype(str)
+  
             
             # Create plot
             fig = px.line(

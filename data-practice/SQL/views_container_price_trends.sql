@@ -5,7 +5,7 @@ DROP VIEW IF EXISTS container_price_trends;
 CREATE VIEW container_price_trends AS
 SELECT 
     EXTRACT(YEAR FROM ship_date) AS year,
-    EXTRACT(QUARTER FROM ship_date) AS quarter,
+    EXTRACT(month FROM ship_date) AS month,
     -- Price metrics
     AVG(base_price) AS avg_price,
     MAX(base_price) AS max_price,
@@ -18,21 +18,21 @@ SELECT
     MAX(freight_index) - MIN(freight_index) AS freight_index_range,
     -- Classification for trend analysis
     CASE 
-        WHEN LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)) IS NULL THEN 'Initial'
-        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date))) / 
-            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)), 0) * 100 > 10 
+        WHEN LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date)) IS NULL THEN 'Initial'
+        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date))) / 
+            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date)), 0) * 100 > 10 
         THEN 'Sharp Increase'
-        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date))) / 
-            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)), 0) * 100 BETWEEN 2 AND 10 
+        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date))) / 
+            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date)), 0) * 100 BETWEEN 2 AND 10 
         THEN 'Moderate Increase'
-        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date))) / 
-            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)), 0) * 100 BETWEEN -2 AND 2 
+        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date))) / 
+            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date)), 0) * 100 BETWEEN -2 AND 2 
         THEN 'Stable'
-        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date))) / 
-            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)), 0) * 100 BETWEEN -10 AND -2 
+        WHEN (AVG(base_price) - LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date))) / 
+            NULLIF(LAG(AVG(base_price)) OVER (ORDER BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date)), 0) * 100 BETWEEN -10 AND -2 
         THEN 'Moderate Decrease'
         ELSE 'Sharp Decrease'
     END AS trend_classification
 FROM shipping_container_prices
-GROUP BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)
-ORDER BY year, quarter;
+GROUP BY EXTRACT(YEAR FROM ship_date), EXTRACT(month FROM ship_date)
+ORDER BY year, month;

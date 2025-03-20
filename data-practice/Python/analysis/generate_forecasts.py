@@ -34,7 +34,7 @@ def setup_forecast_table():
         CREATE TABLE container_price_forecast (
             id SERIAL PRIMARY KEY,
             year INTEGER NOT NULL,
-            quarter INTEGER NOT NULL,
+            month INTEGER NOT NULL,
             time_index INTEGER NOT NULL,
             year_fraction NUMERIC(10,2) NOT NULL,
             avg_price NUMERIC(12,2),
@@ -59,19 +59,23 @@ def load_container_price_data():
     query = """
     SELECT 
         EXTRACT(YEAR FROM ship_date) AS year,
-        EXTRACT(QUARTER FROM ship_date) AS quarter,
+        EXTRACT(MONTH FROM ship_date) AS month,
         AVG(base_price) AS avg_price,
         AVG(freight_index) AS avg_freight_index
     FROM shipping_container_prices
-    GROUP BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)
-    ORDER BY year, quarter
+    GROUP BY EXTRACT(YEAR FROM ship_date), EXTRACT(MONTH FROM ship_date)
+    ORDER BY year, month
     """
     return query_to_dataframe(query)
 
 def create_features(df, target_column):
     df_features = df.copy()
     df_features['time_index'] = df_features.index
-    df_features['year_fraction'] = df_features['year'] + (df_features['quarter'] - 1) / 4
+    df_features['year_fraction'] = df_features['year'] + (df_features['month'] - 1) / 12
+    
+    # Add seasonality features
+    df_features['month_sin'] = np.sin(2 * np.pi * df_features['month'] / 12)
+    df_features['month_cos'] = np.cos(2 * np.pi * df_features['month'] / 12)
     
     # Create lag features
     df_features[f'{target_column}_lag1'] = df_features[target_column].shift(1)
@@ -95,23 +99,23 @@ def train_model(features_df, target_column):
     
     return model, feature_cols
 
-def forecast_prices(model, feature_cols, last_data, target_column, periods=8):
+def forecast_prices(model, feature_cols, last_data, target_column, periods=12):
     last_index = last_data.index.max()
     last_year = last_data['year'].iloc[-1]
-    last_quarter = last_data['quarter'].iloc[-1]
+    last_month = last_data['month'].iloc[-1]
     
     future_periods = []
     for i in range(1, periods + 1):
-        new_quarter = (last_quarter + i) % 4
-        if new_quarter == 0:
-            new_quarter = 4
-        new_year = last_year + ((last_quarter + i - 1) // 4)
+        new_month = (last_month + i) % 12
+        if new_month == 0:
+            new_month = 12
+        new_year = last_year + ((last_month + i - 1) // 12)
         
         future_periods.append({
             'year': new_year,
-            'quarter': new_quarter,
+            'month': new_month,
             'time_index': last_index + i,
-            'year_fraction': new_year + (new_quarter - 1) / 4
+            'year_fraction': new_year + (new_month - 1) / 12
         })
     
     future_df = pd.DataFrame(future_periods)
@@ -185,9 +189,9 @@ def main():
     
     print("Forecast generated successfully!")
     print("\nPrice forecast:")
-    print(combined_forecast[['year', 'quarter', 'avg_price']])
+    print(combined_forecast[['year', 'month', 'avg_price']])
     print("\nFreight index forecast:")
-    print(combined_forecast[['year', 'quarter', 'avg_freight_index']])
+    print(combined_forecast[['year', 'month', 'avg_freight_index']])
 
 if __name__ == "__main__":
     main()

@@ -60,7 +60,7 @@ BEGIN
         CREATE TABLE container_price_forecast (
             id SERIAL PRIMARY KEY,
             year INTEGER NOT NULL,
-            quarter INTEGER NOT NULL,
+            month INTEGER NOT NULL,
             time_index INTEGER NOT NULL,
             year_fraction NUMERIC(10,2) NOT NULL,
             avg_price NUMERIC(12,2),
@@ -69,7 +69,6 @@ BEGIN
             avg_freight_index NUMERIC(12,2),
             freight_lower_bound NUMERIC(12,2),
             freight_upper_bound NUMERIC(12,2),
-            time_label VARCHAR(20),
             calculated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     END IF;
@@ -78,7 +77,7 @@ END $$;
 -- Create an index for faster queries
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_container_price_forecast_year_quarter') THEN
-        CREATE INDEX idx_container_price_forecast_year_quarter ON container_price_forecast(year, quarter);
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_container_price_forecast_year_month') THEN
+        CREATE INDEX idx_container_price_forecast_year_month ON container_price_forecast(year, month);
     END IF;
 END $$;
