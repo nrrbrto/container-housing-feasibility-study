@@ -29,7 +29,11 @@ def setup_forecast_table():
     conn = get_connection()
     try:
         cursor = conn.cursor()
+        # Force drop the table
         cursor.execute("DROP TABLE IF EXISTS container_price_forecast")
+        conn.commit()
+        
+        # Create the table with all required columns
         cursor.execute("""
         CREATE TABLE container_price_forecast (
             id SERIAL PRIMARY KEY,
@@ -43,10 +47,19 @@ def setup_forecast_table():
             avg_freight_index NUMERIC(12,2),
             freight_lower_bound NUMERIC(12,2),
             freight_upper_bound NUMERIC(12,2),
+            price_pct_change NUMERIC(10,2),
+            price_lower_pct NUMERIC(10,2),
+            price_upper_pct NUMERIC(10,2),
+            freight_pct_change NUMERIC(10,2),
+            freight_lower_pct NUMERIC(10,2),
+            freight_upper_pct NUMERIC(10,2),
+            cumulative_price_pct NUMERIC(10,2),
+            cumulative_freight_pct NUMERIC(10,2),
             calculated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         """)
         conn.commit()
+        print("Forecast table created successfully")
         return True
     except Exception as e:
         print(f"Error creating forecast table: {e}")
@@ -149,10 +162,86 @@ def forecast_prices(model, feature_cols, last_data, target_column, periods=12):
     
     return future_df
 
+def calculate_percent_changes(forecast_df):
+    """Calculate percent changes for both historical and forecasted values"""
+    # Load historical data
+    query = """
+        SELECT 
+            year, month, avg_price, avg_freight_index 
+        FROM container_price_trends 
+        ORDER BY year, month
+    """
+    historical_data = query_to_dataframe(query)
+    
+    if historical_data.empty:
+        print("Warning: No historical data found")
+        return forecast_df
+    
+    print(f"Loaded {len(historical_data)} historical data points from {historical_data['year'].min()} to {historical_data['year'].max()}")
+    
+    # Calculate month-over-month percent changes for historical data
+    historical_data['price_pct_change'] = historical_data['avg_price'].pct_change() * 100
+    historical_data['freight_pct_change'] = historical_data['avg_freight_index'].pct_change() * 100
+    
+    # Fill NaN values for the first row
+    historical_data = historical_data.fillna({'price_pct_change': 0, 'freight_pct_change': 0})
+    
+    # Save historical percent changes to database
+    try:
+        engine = get_sqlalchemy_engine()
+        historical_data.to_sql('historical_price_changes', engine, if_exists='replace', index=False)
+        print(f"Saved {len(historical_data)} historical price changes to database")
+    except Exception as e:
+        print(f"Error saving historical price changes: {e}")
+    
+    # For forecast data, calculate changes from last historical point
+    if len(forecast_df) > 0 and len(historical_data) > 0:
+        # Get the last historical data point
+        last_historical = historical_data.iloc[-1]
+        latest_price = last_historical['avg_price']
+        latest_freight = last_historical['avg_freight_index']
+        
+        # Calculate first forecast month's percent change from last historical month
+        if len(forecast_df) > 0:
+            forecast_df.at[0, 'price_pct_change'] = ((forecast_df.at[0, 'avg_price'] - latest_price) / latest_price) * 100
+            forecast_df.at[0, 'freight_pct_change'] = ((forecast_df.at[0, 'avg_freight_index'] - latest_freight) / latest_freight) * 100
+            
+            # For subsequent forecast months, calculate month-over-month
+            for i in range(1, len(forecast_df)):
+                forecast_df.at[i, 'price_pct_change'] = ((forecast_df.at[i, 'avg_price'] - forecast_df.at[i-1, 'avg_price']) / 
+                                                        forecast_df.at[i-1, 'avg_price']) * 100
+                forecast_df.at[i, 'freight_pct_change'] = ((forecast_df.at[i, 'avg_freight_index'] - forecast_df.at[i-1, 'avg_freight_index']) / 
+                                                         forecast_df.at[i-1, 'avg_freight_index']) * 100
+                
+                # Calculate bound changes
+                forecast_df.at[i, 'price_lower_pct'] = ((forecast_df.at[i, 'lower_bound'] - forecast_df.at[i-1, 'lower_bound']) / 
+                                                      forecast_df.at[i-1, 'lower_bound']) * 100
+                forecast_df.at[i, 'price_upper_pct'] = ((forecast_df.at[i, 'upper_bound'] - forecast_df.at[i-1, 'upper_bound']) / 
+                                                      forecast_df.at[i-1, 'upper_bound']) * 100
+                forecast_df.at[i, 'freight_lower_pct'] = ((forecast_df.at[i, 'freight_lower_bound'] - forecast_df.at[i-1, 'freight_lower_bound']) / 
+                                                        forecast_df.at[i-1, 'freight_lower_bound']) * 100
+                forecast_df.at[i, 'freight_upper_pct'] = ((forecast_df.at[i, 'freight_upper_bound'] - forecast_df.at[i-1, 'freight_upper_bound']) / 
+                                                        forecast_df.at[i-1, 'freight_upper_bound']) * 100
+        
+        # Calculate cumulative changes from the latest historical data point
+        for i in range(len(forecast_df)):
+            forecast_df.at[i, 'cumulative_price_pct'] = ((forecast_df.at[i, 'avg_price'] - latest_price) / latest_price) * 100
+            forecast_df.at[i, 'cumulative_freight_pct'] = ((forecast_df.at[i, 'avg_freight_index'] - latest_freight) / latest_freight) * 100
+    
+    print(f"Historical data range: {historical_data['year'].min()}-{historical_data['year'].max()}")
+    print(f"Sample historical changes:\n{historical_data[['year', 'month', 'price_pct_change', 'freight_pct_change']].head()}")
+    
+    return forecast_df
+
 def main():
     # Create the forecast table with proper structure
     print("Setting up forecast table...")
-    setup_forecast_table()
+    if not setup_forecast_table():
+        print("Failed to set up forecast table, exiting")
+        return
+    
+    print("Loading price data...")
+    price_data = load_container_price_data()
     
     print("Loading price data...")
     price_data = load_container_price_data()
@@ -182,6 +271,19 @@ def main():
     combined_forecast['freight_lower_bound'] = freight_forecast['lower_bound']
     combined_forecast['freight_upper_bound'] = freight_forecast['upper_bound']
     
+    # Calculate percent changes
+    print("\nCalculating percent changes...")
+    combined_forecast = calculate_percent_changes(combined_forecast)
+    print("\nPercent changes calculated:")
+    print(combined_forecast[['year', 'month', 'price_pct_change', 'freight_pct_change']].head())
+    
+    #Print column names before saving   
+    print(f"DataFrame columns before saving: {combined_forecast.columns.tolist()}")
+    
+    print("\nSaving to database...")
+    engine = get_sqlalchemy_engine()
+    combined_forecast.to_sql('container_price_forecast', engine, if_exists='append', index=False)
+
     # Save to database using engine
     print("\nSaving to database...")
     engine = get_sqlalchemy_engine()

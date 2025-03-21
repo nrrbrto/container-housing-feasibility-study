@@ -13,7 +13,7 @@ def load_container_price_data():
     """Load container price data from database"""
     query = """
     SELECT * FROM container_price_trends 
-    ORDER BY year, quarter
+    ORDER BY year, month
     """
     return query_to_dataframe(query)
 
@@ -24,7 +24,7 @@ def create_price_features(df, target_column):
     
     # Create time-based features
     df_features['time_index'] = df_features.index
-    df_features['year_fraction'] = df_features['year'] + (df_features['quarter'] - 1) / 4
+    df_features['year_fraction'] = df_features['year'] + (df_features['month'] - 1) / 12
     
     # Create lag features (1, 2, and 4 periods)
     df_features[f'{target_column}_lag1'] = df_features[target_column].shift(1)
@@ -71,21 +71,21 @@ def forecast_container_prices(model, feature_cols, last_data, target_column, per
     # Create dataframe for future periods
     last_index = last_data.index.max()
     last_year = last_data['year'].iloc[-1]
-    last_quarter = last_data['quarter'].iloc[-1]
+    last_month = last_data['month'].iloc[-1]
     
     future_periods = []
     
     for i in range(1, periods + 1):
-        new_quarter = (last_quarter + i) % 4
-        if new_quarter == 0:
-            new_quarter = 4
-        new_year = last_year + ((last_quarter + i - 1) // 4)
+        new_month = (last_month + i) % 12
+        if new_month == 0:
+            new_month = 12
+        new_year = last_year + ((last_month + i - 1) // 12)
         
         future_periods.append({
             'year': new_year,
-            'quarter': new_quarter,
+            'month': new_month,
             'time_index': last_index + i,
-            'year_fraction': new_year + (new_quarter - 1) / 4
+            'year_fraction': new_year + (new_month - 1) / 12
         })
     
     future_df = pd.DataFrame(future_periods)
@@ -101,13 +101,28 @@ def forecast_container_prices(model, feature_cols, last_data, target_column, per
             future_df.loc[0, 'rolling_mean_4'] = last_data[target_column].iloc[-4:].mean()
         else:
             # For subsequent predictions, use the previously predicted values
-            lag1_idx = i - 1 if i - 1 >= 0 else None
-            lag2_idx = i - 2 if i - 2 >= 0 else None
-            lag4_idx = i - 4 if i - 4 >= 0 else None
+            # Fix the lag index handling to avoid None values
+            lag1_idx = max(0, i - 1)  # Use max to ensure it's never negative
+            lag2_idx = max(0, i - 2)
+            lag4_idx = max(0, i - 4)
             
-            future_df.loc[i, f'{target_column}_lag1'] = future_df.loc[lag1_idx, target_column] if lag1_idx is not None else last_data[target_column].iloc[-(abs(lag1_idx) + 1)]
-            future_df.loc[i, f'{target_column}_lag2'] = future_df.loc[lag2_idx, target_column] if lag2_idx is not None else last_data[target_column].iloc[-(abs(lag2_idx) + 1)]
-            future_df.loc[i, f'{target_column}_lag4'] = future_df.loc[lag4_idx, target_column] if lag4_idx is not None else last_data[target_column].iloc[-(abs(lag4_idx) + 1)]
+            # For lag1
+            if i >= 1:
+                future_df.loc[i, f'{target_column}_lag1'] = future_df.loc[i-1, target_column]
+            else:
+                future_df.loc[i, f'{target_column}_lag1'] = last_data[target_column].iloc[-1]
+            
+            # For lag2
+            if i >= 2:
+                future_df.loc[i, f'{target_column}_lag2'] = future_df.loc[i-2, target_column]
+            else:
+                future_df.loc[i, f'{target_column}_lag2'] = last_data[target_column].iloc[-(2-i)]
+            
+            # For lag4
+            if i >= 4:
+                future_df.loc[i, f'{target_column}_lag4'] = future_df.loc[i-4, target_column]
+            else:
+                future_df.loc[i, f'{target_column}_lag4'] = last_data[target_column].iloc[-(4-i)]
             
             # Calculate rolling means
             if i < 2:
@@ -132,15 +147,94 @@ def forecast_container_prices(model, feature_cols, last_data, target_column, per
     
     return future_df
 
+def calculate_percent_changes(forecast_df, price_data, target_column):
+    """Calculate percentage changes for historical and forecasted data"""
+    try:
+        # Calculate month-over-month percent changes for original data
+        price_data[f'{target_column}_pct_change'] = price_data[target_column].pct_change() * 100
+        
+        # Calculate changes for the first forecast period
+        if len(forecast_df) > 0 and len(price_data) > 0:
+            # Get last historical data point
+            last_historical = price_data.iloc[-1]
+            latest_value = last_historical[target_column]
+            
+            # Calculate first forecast period's change from last historical
+            first_forecast_value = forecast_df.iloc[0][target_column]
+            first_pct_change = ((first_forecast_value - latest_value) / latest_value) * 100
+            forecast_df.loc[0, f'{target_column}_pct_change'] = first_pct_change
+            
+            # Calculate month-over-month changes for subsequent periods
+            for i in range(1, len(forecast_df)):
+                current = forecast_df.iloc[i][target_column]
+                previous = forecast_df.iloc[i-1][target_column]
+                pct_change = ((current - previous) / previous) * 100
+                forecast_df.loc[i, f'{target_column}_pct_change'] = pct_change
+            
+            # Calculate cumulative change from last historical value
+            for i in range(len(forecast_df)):
+                current = forecast_df.iloc[i][target_column]
+                cumulative_pct = ((current - latest_value) / latest_value) * 100
+                forecast_df.loc[i, f'cumulative_{target_column}_pct'] = cumulative_pct
+                
+            # Calculate changes for bound values
+            for i in range(1, len(forecast_df)):
+                # Lower bound
+                current_lower = forecast_df.iloc[i]['lower_bound']
+                previous_lower = forecast_df.iloc[i-1]['lower_bound']
+                lower_pct = ((current_lower - previous_lower) / previous_lower) * 100
+                forecast_df.loc[i, f'{target_column}_lower_pct'] = lower_pct
+                
+                # Upper bound
+                current_upper = forecast_df.iloc[i]['upper_bound']
+                previous_upper = forecast_df.iloc[i-1]['upper_bound']
+                upper_pct = ((current_upper - previous_upper) / previous_upper) * 100
+                forecast_df.loc[i, f'{target_column}_upper_pct'] = upper_pct
+            
+            # First period's bound changes initialized to 0
+            forecast_df.loc[0, f'{target_column}_lower_pct'] = 0
+            forecast_df.loc[0, f'{target_column}_upper_pct'] = 0
+        
+        # Save historical percent changes
+        try:
+            # Format column name for database
+            if target_column == 'avg_price':
+                change_col_name = 'price_pct_change'
+            else:
+                change_col_name = 'freight_pct_change'
+            
+            # Create a copy of the data with renamed columns
+            historical_data = price_data.copy()
+            historical_data.rename(columns={f'{target_column}_pct_change': change_col_name}, inplace=True)
+            
+            # Save historical changes data to database
+            dataframe_to_sql(historical_data, 'historical_price_changes', if_exists='replace')
+            print(f"Saved historical {target_column} changes to database")
+        except Exception as e:
+            print(f"Error saving historical changes: {e}")
+    
+    except Exception as e:
+        print(f"Error calculating percent changes: {e}")
+    
+    return forecast_df
+
 def run_price_forecasting():
     """Main function to run the price forecasting pipeline for both price and freight index"""
     # Load data
     print("Loading container price data...")
-    price_data = load_container_price_data()
-    
-    if price_data.empty:
-        print("Error: No price data available")
-        return None, None
+    try:
+        price_data = load_container_price_data()
+        
+        if price_data.empty:
+            print("Error: No price data available")
+            return None
+        
+        print(f"Loaded data with columns: {price_data.columns.tolist()}")
+        print(f"Data range: {price_data['year'].min()}-{price_data['year'].max()}")
+        
+    except Exception as e:
+        print(f"Error loading data: {e}")
+        return None
     
     forecasts = {}
     
@@ -153,7 +247,11 @@ def run_price_forecasting():
     price_model, price_feature_cols = train_price_model(price_features_df, 'avg_price')
     
     # Generate base price forecast
-    price_forecast = forecast_container_prices(price_model, price_feature_cols, price_features_df, 'avg_price', periods=8)
+    price_forecast = forecast_container_prices(price_model, price_feature_cols, price_features_df, 'avg_price', periods=12)
+    
+    # Calculate percent changes for price forecast
+    print("\nCalculating price percentage changes...")
+    price_forecast = calculate_percent_changes(price_forecast, price_data, 'avg_price')
     forecasts['price'] = price_forecast
     
     # Process freight index forecast
@@ -165,7 +263,11 @@ def run_price_forecasting():
     freight_model, freight_feature_cols = train_price_model(freight_features_df, 'avg_freight_index')
     
     # Generate freight index forecast
-    freight_forecast = forecast_container_prices(freight_model, freight_feature_cols, freight_features_df, 'avg_freight_index', periods=8)
+    freight_forecast = forecast_container_prices(freight_model, freight_feature_cols, freight_features_df, 'avg_freight_index', periods=12)
+    
+    # Calculate percent changes for freight forecast
+    print("\nCalculating freight percentage changes...")
+    freight_forecast = calculate_percent_changes(freight_forecast, price_data, 'avg_freight_index')
     forecasts['freight'] = freight_forecast
     
     # Combine forecasts for storage
@@ -173,10 +275,33 @@ def run_price_forecasting():
     combined_forecast['avg_freight_index'] = freight_forecast['avg_freight_index']
     combined_forecast['freight_lower_bound'] = freight_forecast['lower_bound']
     combined_forecast['freight_upper_bound'] = freight_forecast['upper_bound']
+    combined_forecast['freight_pct_change'] = freight_forecast['avg_freight_index_pct_change']
+    combined_forecast['freight_lower_pct'] = freight_forecast['avg_freight_index_lower_pct']
+    combined_forecast['freight_upper_pct'] = freight_forecast['avg_freight_index_upper_pct']
+    combined_forecast['cumulative_freight_pct'] = freight_forecast['cumulative_avg_freight_index_pct']
+    
+    # Rename columns for consistency
+    combined_forecast.rename(columns={
+        'avg_price_pct_change': 'price_pct_change',
+        'avg_price_lower_pct': 'price_lower_pct',
+        'avg_price_upper_pct': 'price_upper_pct',
+        'cumulative_avg_price_pct': 'cumulative_price_pct'
+    }, inplace=True)
+    
+    # Print summary of percent changes
+    print("\nPercent changes calculated:")
+    print(combined_forecast[['year', 'month', 'price_pct_change', 'freight_pct_change']].head())
+    
+    # Print column names before saving
+    print(f"DataFrame columns before saving: {combined_forecast.columns.tolist()}")
     
     # Save combined forecast to database
-    print("Saving forecast to database...")
-    dataframe_to_sql(combined_forecast, 'container_price_forecast', if_exists='replace')
+    print("\nSaving to database...")
+    try:
+        dataframe_to_sql(combined_forecast, 'container_price_forecast', if_exists='replace')
+        print("Forecast saved successfully")
+    except Exception as e:
+        print(f"Error saving forecast: {e}")
     
     return forecasts
 
@@ -185,7 +310,12 @@ if __name__ == "__main__":
     forecast_results = run_price_forecasting()
     if forecast_results is not None:
         print("Forecasting completed successfully!")
-        print("\nPrice forecast summary:")
-        print(forecast_results['price'][['year', 'quarter', 'avg_price']])
-        print("\nFreight index forecast summary:")
-        print(forecast_results['freight'][['year', 'quarter', 'avg_freight_index']])
+        try:
+            print("\nPrice forecast summary:")
+            print(forecast_results['price'][['year', 'month', 'avg_price', 'avg_price_pct_change']].head())
+            print("\nFreight index forecast summary:")
+            print(forecast_results['freight'][['year', 'month', 'avg_freight_index', 'avg_freight_index_pct_change']].head())
+        except Exception as e:
+            print(f"Error printing summary: {e}")
+    else:
+        print("Price forecasting failed")
