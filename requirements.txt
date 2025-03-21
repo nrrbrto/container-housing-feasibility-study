@@ -1,0 +1,20 @@
+# Database
+psycopg2-binary
+SQLAlchemy
+
+# Data processing
+pandas
+numpy
+
+# Machine Learning
+scikit-learn
+
+# Visualization
+plotly
+streamlit
+matplotlib
+seaborn
+
+# Utilities
+python-dotenv
+openpyxl

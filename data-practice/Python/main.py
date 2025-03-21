@@ -47,9 +47,9 @@ def main():
     print("ANALYSIS SUMMARY")
     print("=" * 50)
     
-    print("\nPrice Forecast (Next 4 Quarters):")
+    print("\nPrice Forecast (Next 12 months):")
     if forecast is not None:
-        print(forecast[['year', 'quarter', 'avg_price']].head(4))
+        print(forecast[['year', 'month', 'avg_price']].head(4))
     
     print("\nCost Efficiency (% Savings vs Traditional):")
     if metrics is not None:

@@ -15,7 +15,7 @@ DB_PARAMS = {
 
 # Path to CSV files
 BASE_PATH = 'C:/Users/Banette/Documents/Container Housing Feasibility/data-practice/processed/Per Year/'
-YEARS = list(range(2017, 2024))  # 2017 to 2024
+YEARS = list(range(2017, 2025))  # 2017 to 2024
 
 def connect_to_db():
     """Connect to the PostgreSQL database server"""
