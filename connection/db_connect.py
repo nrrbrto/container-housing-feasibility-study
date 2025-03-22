@@ -2,13 +2,16 @@ import os
 import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
+import urllib.parse
 
 # Use direct connection with the updated password
+password = os.environ.get('DB_PASSWORD', 'Summer2k24#22599')
+encoded_password = urllib.parse.quote_plus(password)
+
 DATABASE_URL = os.environ.get(
     'DATABASE_URL',
-    'postgresql://postgres:Summer2k24#22599@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres'
+    f'postgresql://postgres:{encoded_password}@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres'
 )
-
 # Fix for Heroku's postgres:// vs postgresql:// issue
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
@@ -39,9 +42,29 @@ def get_connection():
 def get_sqlalchemy_engine():
     """Get SQLAlchemy engine for pandas operations"""
     try:
-        return create_engine(DATABASE_URL)
+        # Create a safe version for logging (hide password)
+        safe_url = DATABASE_URL
+        if '@' in safe_url:
+            parts = safe_url.split('@')
+            credentials = parts[0].split(':')
+            if len(credentials) > 2:
+                safe_url = f"{credentials[0]}:{credentials[1]}:****@{parts[1]}"
+            else:
+                safe_url = f"{credentials[0]}:****@{parts[1]}"
+        
+        print(f"Creating SQLAlchemy engine with URL pattern: {safe_url}")
+        engine = create_engine(DATABASE_URL)
+        
+        # Test connection
+        with engine.connect() as conn:
+            result = conn.execute("SELECT 1")
+            print("SQLAlchemy connection test successful")
+        
+        return engine
     except Exception as e:
         print(f"Error creating SQLAlchemy engine: {e}")
+        import traceback
+        traceback.print_exc()
         raise
 
 def query_to_dataframe(query):

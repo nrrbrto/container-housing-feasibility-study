@@ -39,23 +39,33 @@ page = st.sidebar.radio(
 @st.cache_data(ttl=600)
 def load_data(data_type):
     """Load data based on the selected data type"""
-    if data_type == "housing_models":
-        return query_to_dataframe("SELECT * FROM housing_models")
-    elif data_type == "cost_breakdown":
-        return query_to_dataframe("SELECT * FROM cost_breakdown")
-    elif data_type == "price_forecast":
-        return query_to_dataframe("SELECT * FROM container_price_forecast")
-    elif data_type == "efficiency_metrics":
-        return query_to_dataframe("SELECT * FROM cost_efficiency_analysis")
-    elif data_type == "sensitivity":
-        return query_to_dataframe("SELECT * FROM sensitivity_analysis_results LIMIT 1000")
-    elif data_type == "optimal_scenarios":
-        return query_to_dataframe("SELECT * FROM sensitivity_optimal_scenarios")
-    elif data_type == "container_price_trends":
-        return query_to_dataframe("SELECT * FROM container_price_trends")
-    elif data_type == "historical_price_changes":
-        return query_to_dataframe("SELECT * FROM historical_price_changes")
-    else:
+    try:
+        if data_type == "housing_models":
+            return query_to_dataframe("SELECT * FROM housing_models")
+        elif data_type == "cost_breakdown":
+            return query_to_dataframe("SELECT * FROM cost_breakdown")
+        elif data_type == "price_forecast":
+            print("Loading price forecast data...")
+            df = query_to_dataframe("SELECT * FROM container_price_forecast")
+            print(f"Loaded {len(df)} price forecast records")
+            return df
+        elif data_type == "efficiency_metrics":
+            return query_to_dataframe("SELECT * FROM cost_efficiency_analysis")
+        elif data_type == "sensitivity":
+            return query_to_dataframe("SELECT * FROM sensitivity_analysis_results LIMIT 1000")
+        elif data_type == "optimal_scenarios":
+            return query_to_dataframe("SELECT * FROM sensitivity_optimal_scenarios")
+        elif data_type == "container_price_trends":
+            return query_to_dataframe("SELECT * FROM container_price_trends")
+        elif data_type == "historical_price_changes":
+            return query_to_dataframe("SELECT * FROM historical_price_changes")
+        else:
+            return pd.DataFrame()
+    except Exception as e:
+        print(f"Error loading {data_type} data: {e}")
+        import traceback
+        traceback.print_exc()
+        # Return empty DataFrame on error
         return pd.DataFrame()
 
 # Cost Analysis Page
