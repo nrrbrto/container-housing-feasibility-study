@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 # Get database connection parameters from environment variable
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db.bfqeyzepvkrhbdfjxeld.supabase.co:6543/postgres?sslmode=require')
 
 # Fix for Heroku's postgres:// vs postgresql:// issue
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
