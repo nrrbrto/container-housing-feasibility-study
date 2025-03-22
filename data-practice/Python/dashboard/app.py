@@ -7,13 +7,44 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Try importing from project root first (production)
+# Brute force
+project_paths = [
+    os.path.dirname(os.path.abspath(__file__)), # current directory
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), # one level up
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), # two levels up
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "connection") # direct to connection folder
+]
+
+for path in project_paths:
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
 try:
     from connection.db_connect import query_to_dataframe, dataframe_to_sql
-except ImportError:
-    # Fall back to development path
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from connection.db_connect import query_to_dataframe, dataframe_to_sql
+    print("Successfully imported database connection modules")
+except ImportError as e:
+    st.error(f"Error importing database modules: {e}")
+    st.info("Attempting to use alternate import methods...")
+    
+    # Try direct import approach
+    try:
+        import connection.db_connect as db
+        query_to_dataframe = db.query_to_dataframe
+        dataframe_to_sql = db.dataframe_to_sql
+        st.success("Found database connection using alternate method")
+    except ImportError as e2:
+        st.error(f"Still unable to import database modules: {e2}")
+        st.warning("The application may not function correctly without database connectivity.")
+        
+        # Define placeholder functions to prevent total failure
+        def query_to_dataframe(query):
+            st.error(f"Database connection failed. Cannot execute query: {query}")
+            return pd.DataFrame()
+            
+        def dataframe_to_sql(*args, **kwargs):
+            st.error("Database connection failed. Cannot save to database.")
+            return False
+
 # Page config
 st.set_page_config(
     page_title="Container Housing Feasibility Analysis",
