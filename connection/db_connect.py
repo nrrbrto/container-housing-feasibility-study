@@ -3,8 +3,8 @@ import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 
-# Get database connection string from environment variable or use default
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:Summer2k24#22599@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres?sslmode=require')
+# Use transaction pooler for better compatibility with Heroku
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres.bfqeyzepvkrhbdfjxeld:Summer2k24#22599@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require')
 
 # Fix for Heroku's postgres:// vs postgresql:// issue
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
