@@ -4,17 +4,30 @@ from sqlalchemy import create_engine
 import pandas as pd
 import urllib.parse
 
-# Use direct connection with the updated password
-password = os.environ.get('DB_PASSWORD', 'Summer2k24#22599')
-encoded_password = urllib.parse.quote_plus(password)
+# Get connection string from environment with fallback logic
+# Use SUPABASE_CONNECTION_TYPE to determine direct vs pooler
+connection_type = os.environ.get('SUPABASE_CONNECTION_TYPE', 'pooler')
 
-DATABASE_URL = os.environ.get(
-    'DATABASE_URL',
-    f'postgresql://postgres:{encoded_password}@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres'
-)
+if connection_type == 'direct':
+    # Direct connection for local development and pg_restore
+    DATABASE_URL = os.environ.get(
+        'DATABASE_URL',
+        'postgresql://postgres:Summer2k24#22599@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres'
+    )
+else:
+    # Pooler connection for Heroku and production
+    DATABASE_URL = os.environ.get(
+        'DATABASE_URL',
+        'postgresql://postgres:Summer2k24#22599@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+    )
+
 # Fix for Heroku's postgres:// vs postgresql:// issue
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Add debugging
+print(f"Using database connection type: {connection_type}")
+print(f"Connection host: {DATABASE_URL.split('@')[1].split('/')[0]}")
 
 def get_connection():
     """Get a PostgreSQL database connection"""
