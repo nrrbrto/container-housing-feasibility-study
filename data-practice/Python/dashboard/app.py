@@ -7,11 +7,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-
-# Project root to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from connection.db_connect import query_to_dataframe
-
+# Try importing from project root first (production)
+try:
+    from connection.db_connect import query_to_dataframe, dataframe_to_sql
+except ImportError:
+    # Fall back to development path
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from connection.db_connect import query_to_dataframe, dataframe_to_sql
 # Page config
 st.set_page_config(
     page_title="Container Housing Feasibility Analysis",
