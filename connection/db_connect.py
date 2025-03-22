@@ -3,8 +3,8 @@ import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 
-# Get database connection parameters from environment variable
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres.bfqeyzepvkrhbdfjxeld:postgresql@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require')
+# Get database connection string from environment variable or use default
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:Summer2k24#22599@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres?sslmode=require')
 
 # Fix for Heroku's postgres:// vs postgresql:// issue
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
@@ -13,7 +13,7 @@ if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
 def get_connection():
     """Get a PostgreSQL database connection"""
     try:
-        print(f"Connecting using DATABASE_URL (Transaction Pooler)")
+        print(f"Connecting using direct connection")
         conn = psycopg2.connect(DATABASE_URL)
         
         # Test the connection
@@ -44,19 +44,15 @@ def get_sqlalchemy_engine():
 def query_to_dataframe(query):
     """Execute SQL query and return results as pandas DataFrame"""
     engine = get_sqlalchemy_engine()
-    try:
-        print(f"Executing query: {query}")
-        df = pd.read_sql(query, engine)
-        print(f"Query returned {len(df)} rows with columns: {df.columns.tolist()}")
-        return df
-    except Exception as e:
-        print(f"Error executing query: {e}")
-        return pd.DataFrame()
+    print(f"Executing query: {query}")
+    df = pd.read_sql(query, engine)
+    print(f"Query returned {len(df)} rows with columns: {df.columns.tolist()}")
+    return df
 
 def dataframe_to_sql(df, table_name, if_exists='replace'):
     """Write pandas DataFrame to SQL database"""
-    engine = get_sqlalchemy_engine()
     try:
+        engine = get_sqlalchemy_engine()
         df.to_sql(table_name, engine, if_exists=if_exists, index=False)
         return True
     except Exception as e:
