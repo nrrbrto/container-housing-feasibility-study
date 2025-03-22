@@ -3,10 +3,10 @@ import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 
-# Use transaction pooler with the updated password
+# Use direct connection with the updated password
 DATABASE_URL = os.environ.get(
     'DATABASE_URL',
-    'postgresql://postgres.bfqeyzepvkrhbdfjxeld:Summer2k24#22599@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require'
+    'postgresql://postgres:Summer2k24#22599@db.bfqeyzepvkrhbdfjxeld.supabase.co:5432/postgres'
 )
 
 # Fix for Heroku's postgres:// vs postgresql:// issue
@@ -46,17 +46,22 @@ def get_sqlalchemy_engine():
 
 def query_to_dataframe(query):
     """Execute SQL query and return results as pandas DataFrame"""
-    engine = get_sqlalchemy_engine()
-    print(f"Executing query: {query}")
-    df = pd.read_sql(query, engine)
-    print(f"Query returned {len(df)} rows with columns: {df.columns.tolist()}")
-    return df
+    try:
+        engine = get_sqlalchemy_engine()
+        print(f"Executing query: {query}")
+        df = pd.read_sql(query, engine)
+        print(f"Query returned {len(df)} rows with columns: {df.columns.tolist()}")
+        return df
+    except Exception as e:
+        print(f"Error executing query: {e}")
+        return pd.DataFrame()
 
 def dataframe_to_sql(df, table_name, if_exists='replace'):
     """Write pandas DataFrame to SQL database"""
     try:
         engine = get_sqlalchemy_engine()
         df.to_sql(table_name, engine, if_exists=if_exists, index=False)
+        print(f"Data written to table {table_name} successfully.")
         return True
     except Exception as e:
         print(f"Error writing to database: {e}")
