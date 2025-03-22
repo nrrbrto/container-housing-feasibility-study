@@ -2,6 +2,14 @@ import os
 import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
+import socket
+
+# Force IPv4
+original_getaddrinfo = socket.getaddrinfo
+def getaddrinfo_ipv4_only(*args, **kwargs):
+    responses = original_getaddrinfo(*args, **kwargs)
+    return [response for response in responses if response[0] == socket.AF_INET]
+socket.getaddrinfo = getaddrinfo_ipv4_only
 
 # Get database connection parameters from environment variable
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db.bfqeyzepvkrhbdfjxeld.supabase.co:6543/postgres?sslmode=require')
@@ -13,7 +21,7 @@ if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
 def get_connection():
     """Get a PostgreSQL database connection"""
     try:
-        print(f"Connecting using DATABASE_URL")
+        print(f"Connecting using DATABASE_URL (IPv4 only)")
         conn = psycopg2.connect(DATABASE_URL)
         
         # Test the connection
