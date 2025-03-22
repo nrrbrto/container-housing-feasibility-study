@@ -18,7 +18,7 @@ else:
     # Pooler connection for Heroku and production
     DATABASE_URL = os.environ.get(
         'DATABASE_URL',
-        'postgresql://postgres:Summer2k24#22599@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+        'postgresql://postgres.bfqeyzepvkrhbdfjxeld:Summer2k24#22599@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
     )
 
 # Fix for Heroku's postgres:// vs postgresql:// issue
