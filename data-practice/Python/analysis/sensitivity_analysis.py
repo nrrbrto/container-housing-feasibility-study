@@ -250,30 +250,48 @@ def analyze_sensitivity_results(results_df):
 def run_sensitivity_pipeline():
     """Main function to run the sensitivity analysis pipeline"""
     print("Running sensitivity analysis...")
-    results, viable, non_viable = run_sensitivity_analysis(iterations=500)
     
-    print("Analyzing sensitivity results...")
-    summary, optimal = analyze_sensitivity_results(results)  # No param_ranges parameter
+    # Run sensitivity analysis
+    try:
+        results, viable, non_viable = run_sensitivity_analysis(iterations=500)
+    except Exception as e:
+        print(f"Error during sensitivity analysis: {e}")
+        return None, None, None, None, None
+    
+    # Analyze sensitivity results
+    try:
+        print("Analyzing sensitivity results...")
+        summary, optimal = analyze_sensitivity_results(results)
+    except Exception as e:
+        print(f"Error during sensitivity results analysis: {e}")
+        return results, None, None, viable, non_viable
     
     print("Sensitivity analysis completed successfully!")
 
-    if not summary.empty:
+    # Print model summary
+    if summary is not None and not summary.empty:
         print("\nModel Summary:")
         summary_cols = ['model_name', 'annual_roi_percentage_mean', 'payback_years_mean']
         if all(col in summary.columns for col in summary_cols):
             print(summary[summary_cols])
         else:
             print("Warning: Not all expected columns are in the summary dataframe")
-    
-    if not optimal.empty:
+    else:
+        print("Warning: No summary data available.")
+
+    # Print optimal scenarios
+    if optimal is not None and not optimal.empty:
         print("\nOptimal Scenarios (Top 5):")
         optimal_cols = ['model_name', 'annual_roi_percentage', 'payback_years', 
-                'container_price_increase', 'rental_income', 'expected_lifespan']
+                        'container_price_increase', 'rental_income', 'expected_lifespan']
         if all(col in optimal.columns for col in optimal_cols):
             print(optimal[optimal_cols].head())
         else:
             print("Warning: Not all expected columns are in the optimal scenarios dataframe")
-    
+    else:
+        print("Warning: No optimal scenarios data available.")
+
+    # Return all results
     return results, summary, optimal, viable, non_viable
 
 if __name__ == "__main__":

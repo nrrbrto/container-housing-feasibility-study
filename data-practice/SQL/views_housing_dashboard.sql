@@ -1,4 +1,5 @@
 -- Dashboard view combining multiple metrics for visualization
+DROP VIEW IF EXISTS housing_dashboard;
 CREATE VIEW housing_dashboard AS
 SELECT 
     m.model_name,

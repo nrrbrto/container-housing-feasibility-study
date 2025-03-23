@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-"""
-Run sensitivity analysis module to generate data for the dashboard.
-This script will populate the database with sensitivity analysis results.
-"""
-
 import os
 import sys
 import time

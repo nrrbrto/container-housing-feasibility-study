@@ -7,44 +7,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Brute force
-project_paths = [
-    os.path.dirname(os.path.abspath(__file__)), # current directory
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), # one level up
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), # two levels up
-    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "connection") # direct to connection folder
-]
+# Add the parent directory of the project to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-for path in project_paths:
-    if path not in sys.path:
-        sys.path.insert(0, path)
-
-try:
-    from connection.db_connect import query_to_dataframe, dataframe_to_sql
-    print("Successfully imported database connection modules")
-except ImportError as e:
-    st.error(f"Error importing database modules: {e}")
-    st.info("Attempting to use alternate import methods...")
-    
-    # Try direct import approach
-    try:
-        import connection.db_connect as db
-        query_to_dataframe = db.query_to_dataframe
-        dataframe_to_sql = db.dataframe_to_sql
-        st.success("Found database connection using alternate method")
-    except ImportError as e2:
-        st.error(f"Still unable to import database modules: {e2}")
-        st.warning("The application may not function correctly without database connectivity.")
-        
-        # Define placeholder functions to prevent total failure
-        def query_to_dataframe(query):
-            st.error(f"Database connection failed. Cannot execute query: {query}")
-            return pd.DataFrame()
-            
-        def dataframe_to_sql(*args, **kwargs):
-            st.error("Database connection failed. Cannot save to database.")
-            return False
-
+from connection.db_connect import query_to_dataframe, dataframe_to_sql
 # Page config
 st.set_page_config(
     page_title="Container Housing Feasibility Analysis",
@@ -252,8 +218,19 @@ elif page == "Price Forecasting":
             historical_changes['time_label'] = historical_changes['year'].astype(int).astype(str) + "-M" + historical_changes['month'].astype(int).astype(str)
             price_forecast['time_label'] = price_forecast['year'].astype(int).astype(str) + "-M" + price_forecast['month'].astype(int).astype(str)
 
-            # Create a combined dataframe for plotting
-            historical_subset = historical_changes[['time_label', 'price_pct_change', 'year', 'month']]
+            if 'price_pct_change' in historical_changes.columns:
+                historical_subset = historical_changes[['time_label', 'price_pct_change', 'year', 'month']]
+            else:
+                # If the column doesn't exist, create the dataframe with available columns and add an empty column
+                historical_subset = historical_changes[['time_label', 'year', 'month']]
+                print("Columns in historical_changes:", historical_changes.columns.tolist())
+            # If price_pct_change isn't there, try to calculate it on the fly
+            if 'avg_price' in historical_changes.columns:
+                historical_subset['price_pct_change'] = historical_changes['avg_price'].pct_change() * 100
+            else:
+                print("Warning: Neither price_pct_change nor avg_price found in historical_changes")
+                historical_subset['price_pct_change'] = 0
+
             historical_subset.loc[:, 'data_type'] = 'Historical'
 
             forecast_subset = price_forecast[['time_label', 'price_pct_change', 'year', 'month']]
@@ -359,8 +336,14 @@ elif page == "Price Forecasting":
             st.subheader("Historical and Forecasted Freight Index Percentage Changes")
 
             # Create a combined dataframe for plotting
-            historical_subset = historical_changes[['time_label', 'freight_pct_change', 'year', 'month']]
-            forecast_subset.loc[:, 'data_type'] = 'Forecast'
+            if 'freight_pct_change' in historical_changes.columns:
+                historical_subset = historical_changes[['time_label', 'freight_pct_change', 'year', 'month']]
+            else:
+                historical_subset = historical_changes[['time_label', 'year', 'month']] 
+                historical_subset['freight_pct_change'] = 0  # Default value
+                print("Warning: 'freight_pct_change' column not found in historical_changes")
+
+            historical_subset.loc[:, 'data_type'] = 'Historical'
 
             forecast_subset = price_forecast[['time_label', 'freight_pct_change', 'year', 'month']]
             forecast_subset['data_type'] = 'Forecast'

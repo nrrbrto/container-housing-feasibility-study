@@ -3,9 +3,13 @@ import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 import urllib.parse
+import numpy as np
 
 # Use transaction pooler with the updated password
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres.bfqeyzepvkrhbdfjxeld:9K8GArjphAhQNLJc@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require')
+# For proper URL encoding of the password
+password = 'Summer2k24#22599'
+encoded_password = urllib.parse.quote_plus(password)
+DATABASE_URL = os.environ.get('DATABASE_URL', f'postgresql://postgres.bfqeyzepvkrhbdfjxeld:{encoded_password}@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require')
 
 # Fix for Heroku's postgres:// vs postgresql:// issue
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
@@ -34,6 +38,8 @@ def get_connection():
         print(f"Error connecting to database: {e}")
         return None
 
+from sqlalchemy.sql import text  # Add this import
+
 def get_sqlalchemy_engine():
     """Get SQLAlchemy engine for pandas operations"""
     try:
@@ -52,7 +58,7 @@ def get_sqlalchemy_engine():
         
         # Test connection
         with engine.connect() as conn:
-            result = conn.execute("SELECT 1")
+            result = conn.execute(text("SELECT 1"))  # Use `text` for raw SQL
             print("SQLAlchemy connection test successful")
         
         return engine
@@ -77,6 +83,9 @@ def query_to_dataframe(query):
 def dataframe_to_sql(df, table_name, if_exists='replace'):
     """Write pandas DataFrame to SQL database"""
     try:
+        # Convert numpy data types to native Python types
+        df = df.apply(lambda x: x.map(lambda y: y.item() if isinstance(y, (np.generic, np.ndarray)) else y))
+        
         engine = get_sqlalchemy_engine()
         df.to_sql(table_name, engine, if_exists=if_exists, index=False)
         print(f"Data written to table {table_name} successfully.")
