@@ -1,22 +1,30 @@
-# Python/run_analysis.py
-
-"""
-Run the complete container housing analysis pipeline.
-This script executes all analysis modules in sequence.
-"""
-
 import os
 import sys
 import time
 
-# Add the project root to the Python path
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(project_root)
+# Dynamically determine the project root directory
+project_root = os.path.abspath(os.path.dirname(__file__))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-# Now use absolute imports from the project root
+# Add parent directories to path
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+
+print("Updated Python Path:", sys.path)
+
+# Relative imports for analysis modules
 from analysis.price_forecasting import run_price_forecasting
 from analysis.cost_analysis import run_cost_analysis
 from analysis.sensitivity_analysis import run_sensitivity_pipeline
+
+# Import from root connection module
+from connection.db_connect import query_to_dataframe, dataframe_to_sql
 
 def main():
     """Run all analysis pipelines"""
@@ -29,24 +37,67 @@ def main():
     
     # Step 1: Run price forecasting
     print("-" * 80)
-    print("STEP 1: CONTAINER PRICE FORECASTING".center(80))
+    print("STEP 1: PRICE FORECASTING".center(80))
     print("-" * 80)
-    forecast = run_price_forecasting()
-    print()
+    
+    forecast_results = run_price_forecasting()
+    
+    if forecast_results is not None:
+        print("\nPrice forecasting completed successfully!")
+        try:
+            # Simply display key forecast information
+            print("\nPrice forecast summary:")
+            if 'price' in forecast_results:
+                print(forecast_results['price'][['year', 'month', 'avg_price']].head())
+            
+            print("\nFreight index forecast summary:")
+            if 'freight' in forecast_results:
+                print(forecast_results['freight'][['year', 'month', 'avg_freight_index']].head())
+        except Exception as e:
+            print(f"Error displaying forecast results: {e}")
+    else:
+        print("Price forecasting failed or returned no results")
     
     # Step 2: Run cost analysis
-    print("-" * 80)
+    print("\n" + "-" * 80)
     print("STEP 2: COST ANALYSIS".center(80))
     print("-" * 80)
+    
     metrics, breakdown = run_cost_analysis()
-    print()
+    
+    # Simple output of results
+    if metrics is not None and not metrics.empty and breakdown is not None and not breakdown.empty:
+        print("\nCost analysis completed successfully!")
+        print("\nCost Efficiency Metrics:")
+        print(metrics[['model_name', 'savings_percentage', 'percent_of_traditional']] 
+              if all(col in metrics.columns for col in ['model_name', 'savings_percentage', 'percent_of_traditional']) 
+              else metrics.head())
+        
+        print("\nCost Breakdown Analysis:")
+        print(breakdown[['model_name', 'materials_percentage', 'labor_percentage', 'finishings_percentage']]
+              if all(col in breakdown.columns for col in ['model_name', 'materials_percentage', 'labor_percentage', 'finishings_percentage'])
+              else breakdown.head())
+    else:
+        print("Cost analysis failed or returned incomplete results")
     
     # Step 3: Run sensitivity analysis
-    print("-" * 80)
+    print("\n" + "-" * 80)
     print("STEP 3: SENSITIVITY ANALYSIS".center(80))
     print("-" * 80)
-    results, summary, optimal = run_sensitivity_pipeline()
-    print()
+    
+    # Unpack all five returned values
+    results, summary, optimal, viable, non_viable = run_sensitivity_pipeline()
+    
+    print("\nSensitivity analysis completed.")
+    print(f"Results: {len(results)} total records")
+    print(f"Viable: {len(viable)} records")
+    print(f"Non-viable: {len(non_viable)} records")
+    
+    print("\nModel Summary:")
+    print(summary)
+    
+    print("\nOptimal Scenarios:")
+    print(optimal.head())
     
     # Print execution summary
     print("=" * 80)
@@ -56,51 +107,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Python/run_dashboard.py
-
-"""
-Run the Streamlit dashboard for visualizing container housing analysis.
-"""
-
-import os
-import subprocess
-import sys
-
-def run_dashboard():
-    """
-    Run the Streamlit dashboard application.
-    
-    This function executes the Streamlit command to run the dashboard.
-    The dashboard will be available at http://localhost:8501.
-    """
-    # Get the path to the dashboard app.py file
-    project_root = os.path.dirname(os.path.abspath(__file__))
-    dashboard_path = os.path.join(project_root, "dashboard", "app.py")
-    
-    # Check if the dashboard file exists
-    if not os.path.exists(dashboard_path):
-        print(f"Error: Dashboard file not found at {dashboard_path}")
-        return False
-    
-    print("=" * 80)
-    print("STARTING CONTAINER HOUSING DASHBOARD".center(80))
-    print("=" * 80)
-    print(f"\nDashboard file: {dashboard_path}")
-    print("\nThe dashboard will be available at http://localhost:8501")
-    print("\nPress Ctrl+C to stop the dashboard")
-    print("=" * 80)
-    
-    # Run the Streamlit command
-    try:
-        subprocess.run(["streamlit", "run", dashboard_path], check=True)
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"Error running Streamlit: {e}")
-        return False
-    except KeyboardInterrupt:
-        print("\nDashboard stopped by user")
-        return True
-
-if __name__ == "__main__":
-    run_dashboard()

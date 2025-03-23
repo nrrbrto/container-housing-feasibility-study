@@ -7,11 +7,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+# Add the parent directory of the project to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-# Project root to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from connection.db_connect import query_to_dataframe
-
+from connection.db_connect import query_to_dataframe, dataframe_to_sql
 # Page config
 st.set_page_config(
     page_title="Container Housing Feasibility Analysis",
@@ -37,23 +36,33 @@ page = st.sidebar.radio(
 @st.cache_data(ttl=600)
 def load_data(data_type):
     """Load data based on the selected data type"""
-    if data_type == "housing_models":
-        return query_to_dataframe("SELECT * FROM housing_models")
-    elif data_type == "cost_breakdown":
-        return query_to_dataframe("SELECT * FROM cost_breakdown")
-    elif data_type == "price_forecast":
-        return query_to_dataframe("SELECT * FROM container_price_forecast")
-    elif data_type == "efficiency_metrics":
-        return query_to_dataframe("SELECT * FROM cost_efficiency_analysis")
-    elif data_type == "sensitivity":
-        return query_to_dataframe("SELECT * FROM sensitivity_analysis_results LIMIT 1000")
-    elif data_type == "optimal_scenarios":
-        return query_to_dataframe("SELECT * FROM sensitivity_optimal_scenarios")
-    elif data_type == "container_price_trends":
-        return query_to_dataframe("SELECT * FROM container_price_trends")
-    elif data_type == "historical_price_changes":
-        return query_to_dataframe("SELECT * FROM historical_price_changes")
-    else:
+    try:
+        if data_type == "housing_models":
+            return query_to_dataframe("SELECT * FROM housing_models")
+        elif data_type == "cost_breakdown":
+            return query_to_dataframe("SELECT * FROM cost_breakdown")
+        elif data_type == "price_forecast":
+            print("Loading price forecast data...")
+            df = query_to_dataframe("SELECT * FROM container_price_forecast")
+            print(f"Loaded {len(df)} price forecast records")
+            return df
+        elif data_type == "efficiency_metrics":
+            return query_to_dataframe("SELECT * FROM cost_efficiency_analysis")
+        elif data_type == "sensitivity":
+            return query_to_dataframe("SELECT * FROM sensitivity_analysis_results LIMIT 1000")
+        elif data_type == "optimal_scenarios":
+            return query_to_dataframe("SELECT * FROM sensitivity_optimal_scenarios")
+        elif data_type == "container_price_trends":
+            return query_to_dataframe("SELECT * FROM container_price_trends")
+        elif data_type == "historical_price_changes":
+            return query_to_dataframe("SELECT * FROM historical_price_changes")
+        else:
+            return pd.DataFrame()
+    except Exception as e:
+        print(f"Error loading {data_type} data: {e}")
+        import traceback
+        traceback.print_exc()
+        # Return empty DataFrame on error
         return pd.DataFrame()
 
 # Cost Analysis Page
@@ -209,8 +218,19 @@ elif page == "Price Forecasting":
             historical_changes['time_label'] = historical_changes['year'].astype(int).astype(str) + "-M" + historical_changes['month'].astype(int).astype(str)
             price_forecast['time_label'] = price_forecast['year'].astype(int).astype(str) + "-M" + price_forecast['month'].astype(int).astype(str)
 
-            # Create a combined dataframe for plotting
-            historical_subset = historical_changes[['time_label', 'price_pct_change', 'year', 'month']]
+            if 'price_pct_change' in historical_changes.columns:
+                historical_subset = historical_changes[['time_label', 'price_pct_change', 'year', 'month']]
+            else:
+                # If the column doesn't exist, create the dataframe with available columns and add an empty column
+                historical_subset = historical_changes[['time_label', 'year', 'month']]
+                print("Columns in historical_changes:", historical_changes.columns.tolist())
+            # If price_pct_change isn't there, try to calculate it on the fly
+            if 'avg_price' in historical_changes.columns:
+                historical_subset['price_pct_change'] = historical_changes['avg_price'].pct_change() * 100
+            else:
+                print("Warning: Neither price_pct_change nor avg_price found in historical_changes")
+                historical_subset['price_pct_change'] = 0
+
             historical_subset.loc[:, 'data_type'] = 'Historical'
 
             forecast_subset = price_forecast[['time_label', 'price_pct_change', 'year', 'month']]
@@ -316,8 +336,14 @@ elif page == "Price Forecasting":
             st.subheader("Historical and Forecasted Freight Index Percentage Changes")
 
             # Create a combined dataframe for plotting
-            historical_subset = historical_changes[['time_label', 'freight_pct_change', 'year', 'month']]
-            forecast_subset.loc[:, 'data_type'] = 'Forecast'
+            if 'freight_pct_change' in historical_changes.columns:
+                historical_subset = historical_changes[['time_label', 'freight_pct_change', 'year', 'month']]
+            else:
+                historical_subset = historical_changes[['time_label', 'year', 'month']] 
+                historical_subset['freight_pct_change'] = 0  # Default value
+                print("Warning: 'freight_pct_change' column not found in historical_changes")
+
+            historical_subset.loc[:, 'data_type'] = 'Historical'
 
             forecast_subset = price_forecast[['time_label', 'freight_pct_change', 'year', 'month']]
             forecast_subset['data_type'] = 'Forecast'

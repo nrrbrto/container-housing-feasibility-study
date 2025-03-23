@@ -1,23 +1,10 @@
-# Python/run_dashboard.py
-
-"""
-Run the Streamlit dashboard for visualizing container housing analysis.
-"""
-
 import os
 import subprocess
 import sys
 
 def run_dashboard():
-    """
-    Run the Streamlit dashboard application.
-    
-    This function executes the Streamlit command to run the dashboard.
-    The dashboard will be available at http://localhost:8501.
-    """
-    # Get the path to the dashboard app.py file
-    project_root = os.path.dirname(os.path.abspath(__file__))
-    dashboard_path = os.path.join(project_root, "dashboard", "app.py")
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    dashboard_path = os.path.join(project_root, "Python", "dashboard", "app.py")  # Fix the path
     
     # Check if the dashboard file exists
     if not os.path.exists(dashboard_path):

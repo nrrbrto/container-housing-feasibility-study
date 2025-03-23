@@ -10,15 +10,14 @@ SELECT
 FROM housing_models
 ORDER BY total_cost;
 
--- Analyze price trends by year and quarter
 SELECT 
-    EXTRACT(YEAR FROM date) AS year,
-    EXTRACT(QUARTER FROM date) AS quarter,
-    AVG(price_usd) AS avg_price,
-    MAX(price_usd) - MIN(price_usd) AS price_range,
-    ROUND(AVG(percent_change), 2) AS avg_percent_change
-FROM container_prices
-GROUP BY EXTRACT(YEAR FROM date), EXTRACT(QUARTER FROM date)
+    EXTRACT(YEAR FROM ship_date) AS year,
+    EXTRACT(QUARTER FROM ship_date) AS quarter,
+    AVG(base_price) AS avg_price,
+    MAX(base_price) - MIN(base_price) AS price_range,
+    (MAX(base_price) - MIN(base_price))/MIN(base_price) * 100 AS price_range_pct
+FROM shipping_container_prices
+GROUP BY EXTRACT(YEAR FROM ship_date), EXTRACT(QUARTER FROM ship_date)
 ORDER BY year, quarter;
 
 -- Create comprehensive dashboard query

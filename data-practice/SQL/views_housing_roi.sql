@@ -1,6 +1,7 @@
 -- [WIP!!!] data is interpolated and used solely for demonstration
 -- View for ROI calculations
 
+DROP VIEW IF EXISTS housing_roi;
 CREATE VIEW housing_roi AS
 WITH params AS (
     -- NOTE: Replace these values with your research data or reasonable assumptions
@@ -38,6 +39,3 @@ SELECT
 FROM housing_models h
 CROSS JOIN params p
 ORDER BY annual_roi_percentage DESC;
-
-
-

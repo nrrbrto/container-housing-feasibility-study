@@ -152,6 +152,15 @@ def calculate_percent_changes(forecast_df, price_data, target_column):
     try:
         # Calculate month-over-month percent changes for original data
         price_data[f'{target_column}_pct_change'] = price_data[target_column].pct_change() * 100
+        # Rename columns for consistency with dashboard
+        if target_column == 'avg_price':
+            price_data.rename(columns={
+                'avg_price_pct_change': 'price_pct_change'
+            }, inplace=True)
+        elif target_column == 'avg_freight_index':
+            price_data.rename(columns={
+                'avg_freight_index_pct_change': 'freight_pct_change'
+            }, inplace=True)
         
         # Calculate changes for the first forecast period
         if len(forecast_df) > 0 and len(price_data) > 0:
@@ -195,17 +204,30 @@ def calculate_percent_changes(forecast_df, price_data, target_column):
             forecast_df.loc[0, f'{target_column}_lower_pct'] = 0
             forecast_df.loc[0, f'{target_column}_upper_pct'] = 0
         
-        # Save historical percent changes
+                # Save historical percent changes
         try:
-            # Format column name for database
-            if target_column == 'avg_price':
-                change_col_name = 'price_pct_change'
-            else:
-                change_col_name = 'freight_pct_change'
+            # Keep the original column name instead of renaming
+            change_col_name = f'{target_column}_pct_change'
             
-            # Create a copy of the data with renamed columns
+            # Create a copy of the data without renaming columns
             historical_data = price_data.copy()
-            historical_data.rename(columns={f'{target_column}_pct_change': change_col_name}, inplace=True)
+            
+            # Print original and target column names for clarity
+            print(f"Original column: {target_column}_pct_change, Target column: {change_col_name}")
+            
+            # Rename columns for consistency with dashboard
+            if target_column == 'avg_price':
+                historical_data.rename(columns={
+                    f'{target_column}_pct_change': 'price_pct_change'
+                }, inplace=True)
+            elif target_column == 'avg_freight_index':
+                historical_data.rename(columns={
+                    f'{target_column}_pct_change': 'freight_pct_change'
+                }, inplace=True)
+            
+            # Debugging: Print the first few rows of the historical data after renaming
+            print(f"Historical data preview after renaming for {target_column}:")
+            print(historical_data.head())
             
             # Save historical changes data to database
             dataframe_to_sql(historical_data, 'historical_price_changes', if_exists='replace')
@@ -275,11 +297,12 @@ def run_price_forecasting():
     combined_forecast['avg_freight_index'] = freight_forecast['avg_freight_index']
     combined_forecast['freight_lower_bound'] = freight_forecast['lower_bound']
     combined_forecast['freight_upper_bound'] = freight_forecast['upper_bound']
+    # Use the actual column names from the freight_forecast DataFrame
     combined_forecast['freight_pct_change'] = freight_forecast['avg_freight_index_pct_change']
     combined_forecast['freight_lower_pct'] = freight_forecast['avg_freight_index_lower_pct']
     combined_forecast['freight_upper_pct'] = freight_forecast['avg_freight_index_upper_pct']
     combined_forecast['cumulative_freight_pct'] = freight_forecast['cumulative_avg_freight_index_pct']
-    
+
     # Rename columns for consistency
     combined_forecast.rename(columns={
         'avg_price_pct_change': 'price_pct_change',
