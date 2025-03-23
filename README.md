@@ -1,70 +1,87 @@
 ## Container Housing Analysis Project
+https://container-housing-dashboard-988102729e39.herokuapp.com/
 
 ### Overview
 
-This project analyzes the feasibility of recycling shipping containers into sustainable housing options for urban development, primarily relating to a Philippine setting (wherever possible) with a focus on cost comparison, sustainability metrics, and practical implementation challenges. Based on a college analysis paper I previously created, this project demonstrates data analytics, visualization, and research skills. Currently working with AI such as Claude and DeepSeek to streamline tasks and analysis, as well as learning and familiarizing myself again with coding.
-
-Skills used: Data entry, analysis, and visualization, research, problem-solving, coding, etc.
+This project analyzes the feasibility of recycling shipping containers into sustainable housing options for urban development, primarily relating to a Philippine setting (wherever possible) with a focus on cost comparison, sustainability metrics, ROI and payback period, and practical implementation challenges. Based on a college analysis paper I previously created, this project demonstrates data analytics, visualization, and research skills. Currently working with AI such as Claude and DeepSeek to streamline tasks and analysis, as well as learning and familiarizing myself again with coding.
 
 ### Completed Work
+- Processed and transformed shipping container and freight index data from 2017-2024 using Excel Power Query and SQL
+- Implemented data cleaning and import scripts using Python
+- Created SQL schema, views, and stored procedures for data analysis
+- Established PostgreSQL database with tables for housing models, cost breakdowns, container prices, and efficiency metrics
 
-Established PostgreSQL database with tables for housing models, cost breakdowns, container prices, and efficiency metrics
-Created SQL schema, views, and stored procedures for data analysis
-Processed and transformed shipping container data from 2017-2024
-Implemented data cleaning and import scripts using Python
-Developed analysis modules for price forecasting and cost comparison
-Created analysis queries for ROI evaluation and cost efficiency calculations
-Built visualization components for housing model comparisons and price trends
+Developed analysis modules and visualization for:
+- Cost comparison between traditional housing and container-based alternatives
+- Sustainability metrics tracking (waste reduction, material usage)
+- Price forecasting for shipping containers
+- ROI and payback period analysis
+- Sensitivity analysis using Monte Carlo simulation
 
-### Work in Progress -
-Python > Tableau
-Python analysis pipelines for sensitivity and Monte Carlo simulation
-Streamlit dashboard implementation for interactive analysis
-Tableau integration for advanced visualizations
-Comprehensive report generation with findings
-Link query results and visualizations for straightforward progress evaluation
+### Work in Progress
+- Clean app interface
+- Tableau integration
+- Finalizing references and citations
+  
+### Technology Stack
 
-### Project Structure -
+Database: PostgreSQL
+Programming: Python, SQL
+Data Processing: Pandas, NumPy, SQLAlchemy
+Analysis: Scikit-learn, SciPy
+Visualization: Plotly, Streamlit, Tableau
+Development: Git, VSCode
+
+### Project Structure
 ```plaintext
 Container Housing Feasibility/
 ├── .vscode/                          # VS Code configuration
+├── connection/                    # Database connection modules
+│   ├── pycache/
+│   ├── init__.py
+│   └── db_connect.py
 ├── data-practice/                    # Data storage and processing
 │   ├── processed/                    # Processed data files
 │   │   └── Per Year/                 # CSV files organized by year (2017-2024)
 │   │       ├── 2017.csv
 │   │       ├── 2018.csv
 │   │       └── ...
-│   ├── Python/                       # Python analysis scripts
-│   │   ├── connection/               # Database connection modules
-│   │   ├── analysis/                 # Analysis modules for forecasting, cost, sensitivity
-│   │   ├── visualization/            # Visualization libraries and helpers
-│   │   ├── dashboard/                # Streamlit dashboard components
-│   │   └── main.py                   # Main analysis runner
-│   ├── SQL/                          # SQL scripts and queries
-│   │   ├── analysis_query.sql        # Analysis queries
-│   │   ├── import_container_data.py  # Data import script
-│   │   ├── import_data.sql           # Data import SQL
-│   │   ├── procedures.sql            # Stored procedures
-│   │   ├── reports.sql               # Report generation queries
-│   │   ├── schema.sql                # Main database schema
-│   │   ├── schema_container_prices.sql # Container prices schema
-│   │   ├── view_container_price.sql  # Container price views
-│   │   ├── view_shipping_analysis.sql # Shipping analysis views
-│   │   ├── views_container_price_trends.sql # Price trend views
-│   │   ├── views_housing_dashboard.sql # Dashboard views
-│   │   └── views_housing_roi.sql     # ROI calculation views
-│   └── raw/                          # Raw data files
+│   ├── Python/                    # Python scripts
+│   │   ├── analysis/              # Analysis modules
+│   │   │   ├── __pycache__/
+│   │   │   ├── __init__.py
+│   │   │   ├── cost_analysis.py
+│   │   │   ├── price_forecasting.py
+│   │   │   └── sensitivity_analysis.py
+│   │   ├── dashboard/
+│   │   │   └── app.py
+│   │   ├── db.setup.sh
+│   │   ├── main.py
+│   │   ├── run_analysis.py
+│   │   ├── run_dashboard.py
+│   ├── raw/                       # Raw data files
+│   └── SQL/                       # SQL scripts
+│       ├── analysis_query.sql
+│       ├── import_container_data.py
+│       ├── import_data.sql
+│       ├── procedures.sql
+│       ├── reports.sql
+│       ├── schema.sql
+│       ├── schema_container_prices.sql
+│       ├── view_container_price.sql
+│       ├── view_shipping_analysis.sql
+│       ├── views_container_price_trends.sql
+│       ├── views_housing_dashboard.sql
+│       └── views_housing_roi.sql
 ├── documentation/                    # Project documentation
-│   ├── CE10_Proj.pdf                 # Base research paper
-│   ├── ArchJosieDeAsisDP.pdf         # Container housing potential study
 │   ├── limitations/                  # Project scope and limitations
-│   │   ├── Container Housing Project Limitations.md
-│   │   └── Model Comparison Limitations.md
-│   └── project-notes/                # Development notes
+│   └── project-notes/                # Development notes (old)
 │       └── Revised Container Housing Project Workflow.mermaid
-└── visualizations/                   # Visualization components
-    ├── dashboards/                   # Tableau dashboards
-    └── exports/                      # Exported visualizations
+├── .gitignore
+├── Procfile
+├── README.md
+├── requirements.txt
+└── runtime.txt
 ```
 
 ### Database Structure (using local PostgreSQL connection)
@@ -95,48 +112,23 @@ container_housing (Database)
         └── analyze_housing_sensitivity(numeric, numeric, integer)
 ```
 
-### Technology Stack
-
-Database: PostgreSQL
-Programming: Python, SQL
-Data Processing: Pandas, NumPy, SQLAlchemy
-Analysis: Scikit-learn, SciPy
-Visualization: Plotly, Streamlit, Tableau
-Development: Git, VSCode
-
 ---
 
 ## Setup Instructions
 
 ### 1. Environment Setup
 
-Create and activate a virtual environment to keep project dependencies isolated from other Python projects. This prevents conflicts between package versions. (I forgot but you should):
-
 ```bash
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
 
-# Activate virtual environment
-# Windows
-venv\Scripts\activate
-# Mac/Linux
-source venv/bin/activate
-```
-In VS Code, you can select this environment:
-
-- Press Ctrl+Shift+P (or Cmd+Shift+P on Mac)
-- Type "Python: Select Interpreter"
-- Choose the interpreter from your newly created venv
-
-Install required packages:
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
 ### 2. Database Configuration
-
-Ensure PostgreSQL is installed and running. The database connection parameters are:
 
 - Host: localhost
 - Database: container_housing
@@ -146,89 +138,53 @@ Ensure PostgreSQL is installed and running. The database connection parameters a
 
 Then:
 
-- Use referred PostgreSQL client
-- Create a new database named container_housing
-- Run the schema scripts from the SQL folder
-
 ```bash
-# Create database
-psql -U postgres -c CREATE DATABASE container_housing;
+# Database setup
+bash db.setup.sh
 
-# Run schema creation and data import scripts
+# Or run individual scripts:
+psql -U postgres -c "CREATE DATABASE container_housing;"
 psql -U postgres -d container_housing -f SQL/schema.sql
 psql -U postgres -d container_housing -f SQL/schema_container_prices.sql
-psql -U postgres -d container_housing -f SQL/import_data.sql
 psql -U postgres -d container_housing -f SQL/import_container_data.py
 ```
 
-...or run and setup everything using preferred editor.
-
 ### 3. Running the Analysis
 
-- Navigate to the Python folder
-- Run run_analysis.py to execute all analysis modules
-- Results will be displayed in the terminal and saved to the database
+```bash
+Copy# Run full analysis pipeline
+python run_analysis.py
 
-### 4. Launching the Dashboard
+# Run sensitivity analysis
+python run_sensitivity.py
 
-Start the Streamlit dashboard:
-- Navigate to the Python folder
-- Run run_dashboard.py
-- The dashboard will open in the default browser at http://localhost:8501
-
----
+# Launch Streamlit dashboard
+python run_dashboard.py  # Access at http://localhost:8501
+```
 
 ## Analysis Modules
 
 ### Price Forecasting
-- Analyzes historical container price trends
-- Builds predictive models for future container prices
-- Generates price forecasts with prediction intervals
+Analyzes container price and freight index trends from 2017-2024 and predicts future prices with confidence intervals.
 
 ### Cost Analysis
-- Compares total costs of different housing models
-- Analyzes cost breakdown by component (materials, labor, finishings)
-- Calculates cost efficiency metrics relative to traditional housing
+Compares housing models on total cost, cost breakdown, and efficiency metrics.
 
 ### Sensitivity Analysis
-- Simulates different economic scenarios using Monte Carlo simulation [WIP, finding proper data to use]
-- Analyzes impact of key parameters:
-  - Container price fluctuations (-30% to +70%)
-  - Rental income variations (₱8,000 to ₱20,000)
-  - Expected lifespan (15-40 years)
-- Identifies optimal scenarios for each housing model:
-  - Highest ROI scenarios
-  - Shortest payback periods
-  - Statistical performance metrics (mean, min, max, std)
-
-## Result Analysis
-
-The sensitivity analysis module processes simulation results to:
-
-- Identify optimal scenarios for each housing model
-- Find configurations with highest ROI potential
-- Determine conditions for shortest payback periods
-- Calculate statistical distributions (mean, min, max, standard deviation)
-- Rank models based on performance across varied economic conditions
+Simulates scenarios with varying parameters:
+* Container price changes (-5% to 5%)
+* Rental income variations:
+  * Low income: ₱15,460-16,000 annually
+  * Middle income: ₱30,000-31,000 annually
+  * Upper income: ₱59,000-60,000 annually
+* Expected lifespan:
+  * Traditional housing: 80-150 years
+  * Container housing: 40-150 years
 
 ---
 
 ## References
-
-[WIP, still reading]
-
-## Commands Summary
-
-```bash
-# Run analysis pipeline
-python run_analysis.py
-
-# Run dashboard
-python run_dashboard.py
-```
+[WIP, cross-checking references, citations are in the app and limitation files]
 
 ## Notes
-
-- All ROI calculations are based on placeholder values for demonstration
-- The sensitivity analysis uses Monte Carlo simulation with 500 iterations
-- Container price forecasts are based on historical data from 2017-2024
+- Some data are inferences based of existing data like maintenance cost for container homes based of maintenance cost for traditional housing.
